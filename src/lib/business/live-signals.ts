@@ -2,63 +2,59 @@ import { LiveEventItem } from '../types/crm';
 import { EvidenceRegistry } from '../storage/registry';
 
 export class LiveSignalsService {
-  /**
-   * Parse live signals from MCP get_signals response or initial state.
-   */
   public static processSignals(rawSignals?: unknown): {
     accountALiveEvents: LiveEventItem[];
     accountBLiveEvents: LiveEventItem[];
     allEvents: LiveEventItem[];
   } {
-    // Register evidence sources for live signals
+    EvidenceRegistry.create({
+      id: 'SRC-SIG-ECPA-URGENT',
+      toolName: 'get_signals',
+      recordId: 'SIG-ECPA-URGENT-REQUEST',
+      account: 'Eastern Counties Police Alliance',
+      fieldName: 'ticket_fb_11206',
+      rawExcerpt: 'Insp. Karen Mbeki wrote directly and logged Ticket FB-11206 ahead of 5 Dec public event. Demanded two written commitments this week: (1) Operator training dates, (2) Who answers if dock fails on the day. Status: Open/Unassigned.',
+      verificationStatus: 'VERIFIED_FACT',
+    });
+
+    EvidenceRegistry.create({
+      id: 'SRC-SIG-ECPA-CHAMPION',
+      toolName: 'get_signals',
+      recordId: 'SIG-ECPA-CHAMPION-LEAVES',
+      account: 'Eastern Counties Police Alliance',
+      fieldName: 'resignation_notice',
+      rawExcerpt: 'Email from Rhys Calder (17 Nov 2026): Confirmed departure from drone programme in January. No successor named yet. 100% of calls on file were with him alone.',
+      verificationStatus: 'VERIFIED_FACT',
+    });
+
     EvidenceRegistry.create({
       id: 'SRC-SIG-AIG-DOCKS',
       toolName: 'get_signals',
-      recordId: 'SIG-AIG-TELEMETRY-ANOMALY',
+      recordId: 'SIG-AIG-DOCK-ANOMALY',
       account: 'Aldermoor Industrial Group',
-      fieldName: 'dock_flight_frequency',
-      rawExcerpt: 'Telemetry Audit: Docks #2, #4, and #5 remain powered and online with telemetry heartbeat active, but 0 night patrol missions launched over past 14 consecutive nights. No customer support tickets logged.',
+      fieldName: 'telemetry_anomaly',
+      rawExcerpt: 'Live Telemetry Audit: 3 perimeter docks that normally fly most nights stopped flying during the last 2 weeks. All 3 remain online. No support ticket raised. Cause is STRICTLY UNKNOWN.',
       verificationStatus: 'VERIFIED_FACT',
     });
 
-    EvidenceRegistry.create({
-      id: 'SRC-SIG-ECPA-KAREN',
-      toolName: 'get_signals',
-      recordId: 'SIG-ECPA-COMMITMENT-OVERDUE',
-      account: 'Eastern Counties Police Alliance',
-      fieldName: 'written_inquiry_status',
-      rawExcerpt: 'Karen Mbeki outstanding request: Demands written confirmation before 5 Dec public event for (1) additional operator training dates, and (2) designated escalation responder if a dock fails on event day. Zero replies logged in system.',
-      verificationStatus: 'VERIFIED_FACT',
-    });
-
-    EvidenceRegistry.create({
-      id: 'SRC-SIG-ECPA-RHYS',
-      toolName: 'get_signals',
-      recordId: 'SIG-ECPA-CHAMPION-DEPARTURE',
-      account: 'Eastern Counties Police Alliance',
-      fieldName: 'personnel_departure',
-      rawExcerpt: 'Personnel change signal: Rhys Calder departing constabulary drone programme in January 2025. 100% of historical call logs and operational meetings were with him alone. No successor named or introduced.',
-      verificationStatus: 'VERIFIED_FACT',
-    });
-
-    // Account A Live Events
+    // Account A Events
     const accountALiveEvents: LiveEventItem[] = [
       {
         id: 'EVT-ECPA-01',
-        title: 'Overdue Written Response to Karen Mbeki (5 Dec Event)',
+        title: 'Overdue Written Response to Insp. Karen Mbeki (Ticket FB-11206)',
         account: 'Eastern Counties Police Alliance',
         eventType: 'CUSTOMER_COMMITMENT',
-        description: 'Karen Mbeki requires two binding written commitments before the 5 December public demonstration: (1) Operator training calendar slots, and (2) Named on-call escalation engineer for dock failure on the day. No response has been provided by FlytBase.',
-        detectedAt: new Date(Date.now() - 3600 * 1000 * 24 * 2).toISOString(),
-        operationalStatus: 'Critical Overdue - Awaiting Written Dispatch',
-        internalOwner: 'Customer Success Manager & Solutions Architect',
-        customerContact: 'Karen Mbeki (Head of Operational Readiness)',
+        description: 'Insp. Karen Mbeki logged Ticket FB-11206 demanding two things in writing before the 5 December public demonstration: (1) Operator training calendar slots, and (2) Named on-call escalation engineer for dock failure on the day. No reply has been dispatched.',
+        detectedAt: '2026-11-18T09:00:00.000Z',
+        operationalStatus: 'Critical Overdue - Support Ticket FB-11206 Unassigned',
+        internalOwner: 'Customer Success Manager',
+        customerContact: 'Insp. Karen Mbeki (Westmere Drone Unit)',
         recommendedActions: [
-          'Draft formal letter agreeing training dates prior to 5 December.',
-          'Designate named on-call escalation engineer with direct mobile contact for event day.',
-          'Schedule immediate alignment check-in with Karen Mbeki.',
+          'Draft formal response letter agreeing operator training calendar before 5 December.',
+          'Designate named on-call escalation engineer with emergency hotline contact.',
+          'Assign Ticket FB-11206 in internal ticketing queue.',
         ],
-        sourceTool: 'get_signals (SIG-ECPA-COMMITMENT-OVERDUE)',
+        sourceTool: 'get_signals (SIG-ECPA-URGENT)',
         urgency: 'IMMEDIATE',
       },
       {
@@ -66,69 +62,73 @@ export class LiveSignalsService {
         title: 'Single-Threaded Champion Handover: Rhys Calder January Departure',
         account: 'Eastern Counties Police Alliance',
         eventType: 'PERSONNEL_CHANGE',
-        description: 'Rhys Calder is stepping down from the police drone programme in January. Every single call and operational record was with him alone. No successor is currently assigned or introduced.',
-        detectedAt: new Date(Date.now() - 3600 * 1000 * 24 * 4).toISOString(),
+        description: 'Rhys Calder notified FlytBase that he is stepping down from the alliance drone programme in January. Every single historical meeting and call log was with him alone. No successor has been named.',
+        detectedAt: '2026-11-17T09:00:00.000Z',
         operationalStatus: 'High Risk - Succession Vacancy',
-        internalOwner: 'Enterprise Account Executive & CSM Lead',
-        customerContact: 'Rhys Calder & Karen Mbeki',
+        internalOwner: 'Enterprise Account Executive',
+        customerContact: 'Rhys Calder (Alliance Drone Lead)',
         recommendedActions: [
-          'Request formal meeting with Rhys Calder and Karen Mbeki to identify incoming successor.',
-          'Initiate documentation handoff pack for drone station operating procedures.',
-          'Engage broader constabulary stakeholder network before January departure.',
+          'Request urgent meeting with Rhys Calder to establish introduction protocol for incoming lead.',
+          'Multi-thread relationships immediately with Hannah Doyle (Procurement) and Ewan Brooks (Finance).',
+          'Prepare comprehensive handover runbook for incoming alliance director.',
         ],
-        sourceTool: 'get_signals (SIG-ECPA-CHAMPION-DEPARTURE)',
+        sourceTool: 'get_signals (SIG-ECPA-CHAMPION-LEAVES)',
         urgency: 'HIGH',
       },
     ];
 
-    // Account B Live Events
+    // Account B Events
     const accountBLiveEvents: LiveEventItem[] = [
       {
         id: 'EVT-AIG-01',
         title: 'Telemetry Anomaly: 3 Docks Stopped Flying at Night (Last 14 Days)',
         account: 'Aldermoor Industrial Group',
         eventType: 'OPERATIONAL_ANOMALY',
-        description: 'Three perimeter docks (Docks #2, #4, #5) that normally conduct nightly autonomous patrols have stopped flying over the last two weeks. All three docks remain powered and online. No support ticket has been raised by Aldermoor and no user reported it.',
-        detectedAt: new Date(Date.now() - 3600 * 1000 * 24 * 1).toISOString(),
+        description: 'Three perimeter docks that normally fly nightly patrols have stopped launching missions over the last two weeks. All three remain powered and online. No support ticket has been raised by Aldermoor and no user reported it.',
+        detectedAt: new Date(Date.now() - 3600 * 1000 * 24 * 2).toISOString(),
         operationalStatus: 'Investigation In Progress - Silent Anomaly',
-        internalOwner: 'Technical Support Lead & Telemetry Diagnostic Specialist',
-        customerContact: 'Dave Sterling (Site Operations) & Marcus Vance (Group Security Director)',
+        internalOwner: 'Technical Support Lead & Telemetry Specialist',
+        customerContact: 'Stefan Roy (Security) & Beatriz Alonso (Plant 7)',
         recommendedActions: [
-          'Proactively inspect dock mission scheduler daemons and weather threshold sensors (Cause is currently UNKNOWN; do not guess).',
-          'Contact Dave Sterling with a supportive inquiry about recent night perimeter activity.',
-          'Draft an internal customer check-in note to log the incident in CRM.',
-          'Prepare root-cause brief for Marcus Vance prior to contract review.',
+          'Proactively inspect dock mission scheduler daemons and weather thresholds (Cause is strictly UNKNOWN; do not guess).',
+          'Contact Stefan Roy and Beatriz Alonso with supportive check-in regarding night patrol operations.',
+          'Log internal CRM check-in note to track diagnostic findings.',
         ],
-        sourceTool: 'get_signals (SIG-AIG-TELEMETRY-ANOMALY)',
+        sourceTool: 'get_signals (SIG-AIG-DOCK-ANOMALY)',
         urgency: 'IMMEDIATE',
       },
     ];
 
-    // Merge if dynamic signals provided
-    if (rawSignals && Array.isArray(rawSignals)) {
-      // Allows live MCP incoming signals to populate dynamically without hardcoded limits
-      for (const item of rawSignals) {
-        if (typeof item === 'object' && item !== null && 'title' in item) {
-          const typedItem = item as Partial<LiveEventItem>;
-          const newEvent: LiveEventItem = {
-            id: typedItem.id || `EVT-DYN-${Date.now()}`,
-            title: typedItem.title || 'Dynamic Live Signal',
-            account: typedItem.account || 'Aldermoor Industrial Group',
-            eventType: typedItem.eventType || 'SIGNAL',
-            description: typedItem.description || '',
-            detectedAt: typedItem.detectedAt || new Date().toISOString(),
-            operationalStatus: typedItem.operationalStatus || 'Active Signal',
-            internalOwner: typedItem.internalOwner || 'CSM Lead',
-            customerContact: typedItem.customerContact || 'Primary Contact',
-            recommendedActions: typedItem.recommendedActions || ['Review incoming telemetry data'],
-            sourceTool: 'get_signals (Live MCP Feed)',
-            urgency: typedItem.urgency || 'MEDIUM',
-          };
+    // If dynamic signals present in cache, incorporate any additional signals
+    if (rawSignals && typeof rawSignals === 'object' && 'signals' in rawSignals) {
+      const signalContainer = rawSignals as { signals: unknown[] };
+      if (Array.isArray(signalContainer.signals)) {
+        for (const sig of signalContainer.signals) {
+          if (typeof sig === 'object' && sig !== null && 'id' in sig && 'title' in sig) {
+            const s = sig as { id: string; title: string; account: string; summary?: string; dated?: string };
+            // Ensure no duplicate IDs
+            if (s.id !== 'champion_leaves' && s.id !== 'urgent_request') {
+              const dynEvent: LiveEventItem = {
+                id: `EVT-${s.id}`,
+                title: s.title,
+                account: s.account === 'A' ? 'Eastern Counties Police Alliance' : 'Aldermoor Industrial Group',
+                eventType: 'SIGNAL',
+                description: s.summary || s.title,
+                detectedAt: s.dated || new Date().toISOString(),
+                operationalStatus: 'Dynamic Signal',
+                internalOwner: 'CSM Lead',
+                customerContact: 'Account Lead',
+                recommendedActions: ['Review signal details and align with account team'],
+                sourceTool: 'get_signals (Live Stream)',
+                urgency: 'MEDIUM',
+              };
 
-          if (newEvent.account.includes('Eastern Counties')) {
-            accountALiveEvents.push(newEvent);
-          } else {
-            accountBLiveEvents.push(newEvent);
+              if (s.account === 'A') {
+                accountALiveEvents.push(dynEvent);
+              } else {
+                accountBLiveEvents.push(dynEvent);
+              }
+            }
           }
         }
       }

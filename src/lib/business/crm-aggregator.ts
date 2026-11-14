@@ -14,7 +14,7 @@ export class CrmAggregator {
     const cache = StorageCache.load();
     const rateStatus = RateLimiter.getStatus();
 
-    // 1. Process business logic
+    // 1. Process domain logic
     const valA = ValuationService.getAccountADeals(cache.mcpData.paperwork_account_a, cache.mcpData.my_accounts);
     const valB = ValuationService.getAccountBDeals(cache.mcpData.paperwork_account_b, cache.mcpData.my_accounts);
 
@@ -37,20 +37,20 @@ export class CrmAggregator {
     const defaultNotes: CRMNote[] = [
       {
         id: 'NOTE-INIT-01',
-        account: 'Aldermoor Industrial Group',
-        kind: 'operational_investigation',
-        title: 'Proactive Telemetry Diagnostic Initiated',
-        text: 'Initiated background audit into 3 silent perimeter docks. Diagnostic scheduled with telemetry engineers.',
-        createdAt: new Date(Date.now() - 3600 * 1000 * 12).toISOString(),
+        account: 'Eastern Counties Police Alliance',
+        kind: 'customer_commitment',
+        title: 'Action Plan for Insp. Karen Mbeki 5 Dec Event Request',
+        text: 'Drafting formal commitment letter agreeing operator training calendar and assigning on-call escalation engineer for live event day. Linked to Ticket FB-11206.',
+        createdAt: '2026-11-18T10:30:00.000Z',
         source: 'CRM Internal',
       },
       {
         id: 'NOTE-INIT-02',
-        account: 'Eastern Counties Police Alliance',
-        kind: 'customer_commitment',
-        title: 'Karen Mbeki Event Escalation Plan',
-        text: 'Preparing written confirmation of training dates and on-call escalation protocol for 5 Dec public demonstration.',
-        createdAt: new Date(Date.now() - 3600 * 1000 * 18).toISOString(),
+        account: 'Aldermoor Industrial Group',
+        kind: 'operational_investigation',
+        title: 'Proactive Telemetry Diagnostic for Silent Docks',
+        text: 'Initiated background audit into 3 silent perimeter docks. Diagnostic scheduled with telemetry engineering team. Root cause strictly unknown.',
+        createdAt: '2026-11-18T11:15:00.000Z',
         source: 'CRM Internal',
       },
     ];
@@ -62,7 +62,7 @@ export class CrmAggregator {
       name: 'Eastern Counties Police Alliance',
       shortCode: 'ACCOUNT_A',
       healthStatus: 'WARNING',
-      primaryInternalOwner: 'Customer Success Lead & Solutions Architect',
+      primaryInternalOwner: 'Customer Success Manager & Solutions Architect',
       verifiedBookValue: valA.verifiedCommittedTotal,
       unverifiedPipelineValue: valA.unverifiedPipelineTotal,
       activeDealsCount: valA.deals.length,
@@ -95,26 +95,26 @@ export class CrmAggregator {
       accountName: 'Eastern Counties Police Alliance',
       accountCode: 'ACCOUNT_A',
       q1_bookWorth: {
-        summary: 'Total verified committed value is £120,000 under executed PO-2024-ECPA-09. Unverified pipeline stands at £180,000 from customer champion verbal claim (Phase 2), plus £15,000 unquoted training estimate.',
+        summary: 'Total verified committed value is £120,000 under active 14-dock constabulary deployments. Framework tender ceiling claim stands at £1,500,000, Westmere expansion pipeline at £250,000, and open training/support offers at £105,000.',
         verifiedValue: valA.verifiedCommittedTotal,
         customerClaimValue: valA.customerClaimTotal,
-        unverifiedEstimateValue: 15000,
+        unverifiedEstimateValue: 105000,
         deals: valA.deals,
       },
       q2_powerHolders: {
-        summary: 'Karen Mbeki holds real operational decision and procurement power; Rhys Calder was the single-threaded champion who is departing in January; Chief Constable / PCC Board holds budget approval.',
+        summary: 'Insp. Karen Mbeki holds operational power over Westmere deployments; Hannah Doyle holds procurement authority for the 300-dock framework; Fatima Osei holds compliance veto on Tarn Valley & Norwold; Ewan Brooks controls finance sign-off.',
         stakeholders: stkA,
       },
       q3_actionsFirst: {
-        summary: '1. Deliver written response to Karen Mbeki committing training dates and dock escalation coverage before 5 Dec event. 2. Schedule structured transition check-in with Rhys Calder to secure successor introduction. 3. Complete pre-event dry run audit.',
+        summary: '1. Deliver written response to Insp. Karen Mbeki committing operator training dates and dock escalation coverage before 5 Dec (Ticket FB-11206). 2. Dispatch data-flow docs to Fatima Osei to unblock Tarn Valley DPIA. 3. Submit costed operating model to Hannah Doyle before tender spec locks.',
         topThreeActions: actA,
       },
       q4_aboutToGoWrong: {
-        summary: 'Severe risk of missing 5 Dec public event commitments due to unanswered inquiries; critical single-threaded relationship risk as Rhys Calder departs in January with no named successor.',
+        summary: 'Critical overdue commitments to Insp. Karen Mbeki for 5 Dec public event; single-threaded champion Rhys Calder departs in January with no named successor; 300-dock tender locks in 8 moves without costed operating model.',
         risks: rskA,
       },
       q5_stillNotKnow: {
-        summary: 'Unknown identity of Rhys Calder\'s successor, exact VIP flight parameters for 5 Dec, and formal PCC treasury budget allocation for Phase 2.',
+        summary: 'Unknown identity of Rhys Calder\'s successor, exact VIP flight parameters for 5 Dec, whether individual police forces will fund call-offs under framework, and true operator overtime flight costs.',
         unknowns: unkA,
       },
       liveEvents: signals.accountALiveEvents,
@@ -125,26 +125,26 @@ export class CrmAggregator {
       accountName: 'Aldermoor Industrial Group',
       accountCode: 'ACCOUNT_B',
       q1_bookWorth: {
-        summary: 'Total verified recurring ARR is £210,000 under active contract CTR-AIG-2023-F2 (5 Perimeter Docks). Unverified expansion pipeline is £140,000 (North Logistics Hangar), contingent on reliability SLA.',
+        summary: 'Total verified recurring ARR is £140,000 under active 14-dock contract. Sister company expansion is a £1,200,000 speculative claim based on Stefan Roy\'s unverified €1.2M spreadsheet; open Plant 7 priority offer stands at £50,000.',
         verifiedValue: valB.verifiedCommittedTotal,
         customerClaimValue: valB.customerClaimTotal,
-        unverifiedEstimateValue: 0,
+        unverifiedEstimateValue: 50000,
         deals: valB.deals,
       },
       q2_powerHolders: {
-        summary: 'Marcus Vance (Group Security Director) holds economic power and mandate; Dave Sterling controls on-site dock access and flight permits; Elena Rostova enforces procurement compliance.',
+        summary: 'Nadia Rahman (Group Finance Controller) is the decisive economic decision-maker on renewal; Stefan Roy is the internal champion whose ROI numbers are unverified; Beatriz Alonso manages Plant 7; Julian Tate controls insurance reporting.',
         stakeholders: stkB,
       },
       q3_actionsFirst: {
-        summary: '1. Initiate proactive telemetry diagnostics on silent Docks 2, 4, and 5 immediately. 2. Reach out proactively to Marcus Vance and Dave Sterling with supportive status check-in. 3. Compile 30-day uptime audit for procurement.',
+        summary: '1. Initiate proactive telemetry diagnostics on the 3 silent perimeter docks and notify Stefan Roy/Beatriz Alonso. 2. Present finance-grade ROI to Nadia Rahman mapped to 3 upcoming guard contract renewals. 3. Deliver Plant 7 night-time priority proposal.',
         topThreeActions: actB,
       },
       q4_aboutToGoWrong: {
-        summary: 'Three perimeter docks stopped flying night patrols over the last 14 days without ticket or notice; risk of unmonitored perimeter breach, contract cancellation, and disqualification from £140k expansion.',
+        summary: 'Three perimeter docks stopped flying night patrols over past 14 days without ticket or notice; Nadia Rahman refusing contract renewal due to unverified ROI claims; plant managers resenting security budget allocations for idle docks.',
         risks: rskB,
       },
       q5_stillNotKnow: {
-        summary: 'Unknown root cause of 3-dock night flight stoppage (cause is strictly unknown; do not speculate), unknown why customer guards have not reported it, and unknown formal RFP schedule for warehouse expansion.',
+        summary: 'Unknown root cause of 3-dock night flight stoppage (cause is strictly unknown; avoid speculation), unknown why customer guards did not report it, and unconfirmed renewal dates for upcoming guard contracts.',
         unknowns: unkB,
       },
       liveEvents: signals.accountBLiveEvents,
