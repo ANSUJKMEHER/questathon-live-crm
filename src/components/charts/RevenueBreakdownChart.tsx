@@ -57,20 +57,20 @@ export const RevenueBreakdownChart: React.FC<Props> = ({ data }) => {
           />
           <Bar
             dataKey="verified"
-            name="Verified Committed"
+            name="Qualified Renewal Baseline"
             fill="#10b981"
             radius={[4, 4, 0, 0]}
           />
           <Bar
             dataKey="claim"
-            name="Customer Claim"
-            fill="#f59e0b"
+            name="Qualified Pipeline Baseline"
+            fill="#6366f1"
             radius={[4, 4, 0, 0]}
           />
           <Bar
             dataKey="estimate"
-            name="Unverified Estimate"
-            fill="#6366f1"
+            name="Unverified Estimate / Speculative"
+            fill="#f59e0b"
             radius={[4, 4, 0, 0]}
           />
         </BarChart>

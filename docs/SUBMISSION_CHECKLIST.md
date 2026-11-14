@@ -18,13 +18,16 @@ This document tracks the final four required deliverables for the Questathon Cha
 ## ✅ Technical & Compliance Pre-Flight Checklist
 
 ### 1. Data Integrity & Zero Fabrication
-- [x] Verified book values strictly segregated from customer verbal claims ($128,057 / $26,164 committed vs $535k / $207k pipeline).
-- [x] Expired Westmere fleet expansion audited at $0 revenue.
+- [x] Qualified renewal baselines strictly segregated from qualified expansion pipeline and speculative ceilings ($154,221 renewal baseline; $891,199 qualified pipeline baseline; $2,900,000 speculative ceiling).
+- [x] Contractually confirmed revenue audited at $0 (unverified pending signed contract documentation).
+- [x] Expired Westmere fleet expansion audited at $0 revenue (deadline passed unfinished).
+- [x] Idle plants expansion properly excludes null ceiling from speculative ceiling calculation.
 - [x] Owen Fitch (Aldermoor IT Lead) explicitly cataloged as UNMET relationship.
 - [x] Unknowns tracked with lifecycle status (`UNRESOLVED`, `INVESTIGATING`, `RESOLVED`) and suggested actions.
 - [x] Deal-by-deal power mapping answers: Decider, Payer, End User, Blocker, Champion, Status, Needs for every deal.
 - [x] Every factual figure has a traceable source in `EvidenceRegistry` (`src/lib/storage/registry.ts`).
-- [x] Root cause for the Aldermoor 3-dock flight stoppage explicitly marked as **unknown**.
+- [x] Ticket FB-11206 and Rhys Calder departure verified from `get_signals` API; 3-dock anomaly distinguished as Challenge Briefing Telemetry.
+- [x] Root cause for the Aldermoor 3-dock flight stoppage explicitly marked as strictly unknown.
 
 ### 2. Security & MCP Protocol Compliance
 - [x] `AQ_TOKEN` is strictly confined to server-side code (`src/lib/mcp/client.ts`).

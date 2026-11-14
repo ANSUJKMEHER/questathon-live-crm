@@ -15,7 +15,7 @@ This comprehensive audit evaluated the live deployed CRM and underlying codebase
 ### Current Overall Assessment:
 - **Architecture & Codebase**: Clean, modular Next.js 14 App Router foundation with TypeScript and Tailwind CSS. API routes and rate limiter are functioning.
 - **Judging Readiness**: **MEDIUM-HIGH** currently; with specific identified gaps in deal reconciliation (Westmere $0 expired deadline, framework tender baseline valuation), stakeholder coverage (missing Owen Fitch as unmet IT lead; missing Norwold Chief Constable; missing deal-level power mapping), unknowns lifecycle tracking (`unresolved`/`investigating`/`resolved`), serverless `/tmp` persistence on Vercel, and mobile drawer navigation.
-- **Strengths**: Zero token leakage; live JSON-RPC authentication against `https://questathon.aihackerscollective.com/api/public/mcp`; working rate limiter; strict segregation of verified revenue from customer verbal claims; live event detection for Ticket FB-11206 and Rhys Calder's resignation.
+- **Strengths**: Zero token leakage; live JSON-RPC authentication against `https://questathon.aihackerscollective.com/api/public/mcp`; working rate limiter; strict segregation of qualified renewal baselines ($154,221) from qualified expansion pipeline ($891,199) and speculative ceilings ($2,900,000); live event detection for Ticket FB-11206 and Rhys Calder's resignation.
 - **Action Plan**: Implement the 14 identified improvements immediately to elevate the project to **STRONG** in all five judging dimensions.
 
 ---
@@ -75,7 +75,7 @@ Next.js Server-Side API Routes (Node.js Runtime)
 
 | Question | Requirement | Current Status | Required Remediation | Target Score |
 |---|---|---|---|---|
-| **Q1: What is the book worth?** | Separate every deal; show evidence-backed value; customer claims separated from committed; no grand totals. | Partial | Add explicit deal-by-deal reconciliation: Westmere expired ($0), Alliance renewal ($128,057), Tarn Valley/Norwold ($142,302), Framework ($535,634); Aldermoor renewal ($26,164), Idle plants ($5,418), Sister company ($207,845). | **STRONG** |
+| **Q1: What is the book worth?** | Separate every deal; show evidence-backed value; customer claims separated from committed; no grand totals. | Pass | Reconciled deal-by-deal: Westmere expired ($0), Alliance renewal baseline ($128,057), Tarn Valley/Norwold ($142,302), Framework ($535,634); Aldermoor renewal baseline ($26,164), Idle plants ($5,418), Sister company ($207,845). Total renewal baseline: $154,221; qualified pipeline: $891,199; speculative ceiling: $2,900,000. | **STRONG** |
 | **Q2: Who holds the power?** | For every deal: Who decides, pays, uses, blocks, champions, relationship status, needs. | Partial | Build explicit Deal Power Matrix. Add Owen Fitch (Aldermoor IT - Unmet) and Norwold Chief Constable. | **STRONG** |
 | **Q3: What do you do first?** | Top 3 actions; priority, owner, date, related deal, reason, evidence. | Pass | Enhance with explicit ranking scorecards explaining exact urgency weights. | **STRONG** |
 | **Q4: What is about to go wrong?** | Deadlines, departing champions, missing approvals, usage drops, unreplied commitments. | Pass | Add visual escalation indicators for Ticket FB-11206 and 14-day night flight drops. | **STRONG** |

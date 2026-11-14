@@ -33,15 +33,15 @@ export default function OverviewPage() {
   const chartData = [
     {
       account: 'Eastern Counties Police',
-      verified: data.accounts.accountA.verifiedBookValue,
-      claim: data.answers.accountA.q1_bookWorth.customerClaimValue,
-      estimate: data.answers.accountA.q1_bookWorth.unverifiedEstimateValue,
+      verified: data.accounts.accountA.qualifiedRenewalBaseline,
+      claim: data.accounts.accountA.qualifiedPipelineBaseline,
+      estimate: data.accounts.accountA.speculativeCeilingTotal,
     },
     {
       account: 'Aldermoor Industrial',
-      verified: data.accounts.accountB.verifiedBookValue,
-      claim: data.answers.accountB.q1_bookWorth.customerClaimValue,
-      estimate: data.answers.accountB.q1_bookWorth.unverifiedEstimateValue,
+      verified: data.accounts.accountB.qualifiedRenewalBaseline,
+      claim: data.accounts.accountB.qualifiedPipelineBaseline,
+      estimate: data.accounts.accountB.speculativeCeilingTotal,
     },
   ];
 
@@ -285,7 +285,7 @@ export default function OverviewPage() {
                 Audited Revenue Composition ($)
               </h3>
               <p className="text-xs text-slate-400">
-                Strict separation of verified contracts vs uncommitted customer claims.
+                Strict separation of qualified renewal baselines vs qualified expansion pipeline vs speculative ceilings.
               </p>
             </div>
           </div>
