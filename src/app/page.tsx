@@ -89,13 +89,13 @@ export default function OverviewPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
-          title="Verified Committed Book"
+          title="Qualified Renewal Baseline"
           value={`$${(
-            data.accounts.accountA.verifiedBookValue +
-            data.accounts.accountB.verifiedBookValue
+            data.accounts.accountA.qualifiedRenewalBaseline +
+            data.accounts.accountB.qualifiedRenewalBaseline
           ).toLocaleString()}`}
-          subtitle="ECPA $128k + Aldermoor $26k"
-          badge="Verified Fact"
+          subtitle="ECPA $128,057 + Aldermoor $26,164 (Qualified)"
+          badge="Evidence-Backed"
           badgeColor="emerald"
           icon={ShieldCheck}
           onInspectSource={() =>
@@ -104,27 +104,27 @@ export default function OverviewPage() {
         />
 
         <MetricCard
-          title="Unverified Pipeline Ceilings"
+          title="Qualified Pipeline Baseline"
           value={`$${(
-            data.answers.accountA.q1_bookWorth.customerClaimValue +
-            data.answers.accountB.q1_bookWorth.customerClaimValue
+            data.accounts.accountA.qualifiedPipelineBaseline +
+            data.accounts.accountB.qualifiedPipelineBaseline
           ).toLocaleString()}`}
-          subtitle="Tender & Sister Speculative Claims"
-          badge="Uncommitted"
-          badgeColor="amber"
+          subtitle="Tarn $142k + Tender $536k + Idle $5k + Sister $208k"
+          badge="Qualified Pipeline"
+          badgeColor="indigo"
           icon={TrendingUp}
         />
 
         <MetricCard
-          title="Critical Risks Active"
-          value={`${
-            data.accounts.accountA.criticalRisksCount +
-            data.accounts.accountB.criticalRisksCount
-          }`}
-          subtitle="Dock flight drops & Jan departure"
-          badge="Requires Action"
-          badgeColor="rose"
-          icon={AlertOctagon}
+          title="Speculative Pipeline Ceilings"
+          value={`$${(
+            data.accounts.accountA.speculativeCeilingTotal +
+            data.accounts.accountB.speculativeCeilingTotal
+          ).toLocaleString()}`}
+          subtitle="Tarn $200k + Tender $1.5M + Sister $1.2M"
+          badge="Speculative Max"
+          badgeColor="amber"
+          icon={TrendingUp}
         />
 
         <MetricCard
@@ -132,7 +132,7 @@ export default function OverviewPage() {
           value="05 Dec 2026"
           subtitle="Westmere Public Event Showcase"
           badge="Ticket FB-11206"
-          badgeColor="indigo"
+          badgeColor="rose"
           icon={Calendar}
         />
       </div>
@@ -162,27 +162,27 @@ export default function OverviewPage() {
 
           <div className="grid grid-cols-2 gap-3 text-xs bg-slate-950/60 p-3 rounded-lg border border-slate-800/80">
             <div>
-              <span className="text-slate-400">Verified Book:</span>
+              <span className="text-slate-400">Renewal Baseline:</span>
               <div className="text-sm font-bold text-slate-200 font-mono">
-                ${data.accounts.accountA.verifiedBookValue.toLocaleString()}
+                ${data.accounts.accountA.qualifiedRenewalBaseline.toLocaleString()}
               </div>
             </div>
             <div>
               <span className="text-slate-400">Qualified Pipeline:</span>
+              <div className="text-sm font-bold text-indigo-400 font-mono">
+                ${data.accounts.accountA.qualifiedPipelineBaseline.toLocaleString()}
+              </div>
+            </div>
+            <div>
+              <span className="text-slate-400">Speculative Ceiling:</span>
               <div className="text-sm font-bold text-amber-400 font-mono">
-                ${data.answers.accountA.q1_bookWorth.customerClaimValue.toLocaleString()}
+                ${data.accounts.accountA.speculativeCeilingTotal.toLocaleString()}
               </div>
             </div>
             <div>
-              <span className="text-slate-400">Critical Risks:</span>
-              <div className="text-sm font-bold text-rose-400">
-                {data.accounts.accountA.criticalRisksCount} Urgent
-              </div>
-            </div>
-            <div>
-              <span className="text-slate-400">Open Signals:</span>
-              <div className="text-sm font-bold text-indigo-400">
-                {data.accounts.accountA.activeSignalsCount} Live Alerts
+              <span className="text-slate-400">Expired Deals:</span>
+              <div className="text-sm font-bold text-rose-400 font-mono">
+                $0 (Westmere)
               </div>
             </div>
           </div>
@@ -230,27 +230,27 @@ export default function OverviewPage() {
 
           <div className="grid grid-cols-2 gap-3 text-xs bg-slate-950/60 p-3 rounded-lg border border-slate-800/80">
             <div>
-              <span className="text-slate-400">Verified Book (ARR):</span>
+              <span className="text-slate-400">Renewal Baseline (ARR):</span>
               <div className="text-sm font-bold text-slate-200 font-mono">
-                ${data.accounts.accountB.verifiedBookValue.toLocaleString()}
+                ${data.accounts.accountB.qualifiedRenewalBaseline.toLocaleString()}
               </div>
             </div>
             <div>
-              <span className="text-slate-400">Pipeline Claims:</span>
+              <span className="text-slate-400">Qualified Pipeline:</span>
+              <div className="text-sm font-bold text-indigo-400 font-mono">
+                ${data.accounts.accountB.qualifiedPipelineBaseline.toLocaleString()}
+              </div>
+            </div>
+            <div>
+              <span className="text-slate-400">Speculative Ceiling:</span>
               <div className="text-sm font-bold text-amber-400 font-mono">
-                ${data.answers.accountB.q1_bookWorth.customerClaimValue.toLocaleString()}
+                ${data.accounts.accountB.speculativeCeilingTotal.toLocaleString()}
               </div>
             </div>
             <div>
-              <span className="text-slate-400">Critical Risks:</span>
-              <div className="text-sm font-bold text-rose-400">
-                {data.accounts.accountB.criticalRisksCount} Urgent
-              </div>
-            </div>
-            <div>
-              <span className="text-slate-400">Open Signals:</span>
-              <div className="text-sm font-bold text-indigo-400">
-                {data.accounts.accountB.activeSignalsCount} Live Alerts
+              <span className="text-slate-400">Unidentified / Null:</span>
+              <div className="text-sm font-bold text-slate-400 font-mono">
+                $0 (Insurance / Idle)
               </div>
             </div>
           </div>

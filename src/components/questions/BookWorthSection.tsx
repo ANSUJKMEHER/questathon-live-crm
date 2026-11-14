@@ -44,7 +44,7 @@ export const BookWorthSection: React.FC<Props> = ({
           <div className="p-4 bg-emerald-500/10 border border-emerald-500/25 rounded-lg">
             <div className="flex items-center justify-between">
               <span className="text-xs uppercase tracking-wider font-semibold text-emerald-400">
-                Verified Committed Book
+                Qualified Renewal Baseline
               </span>
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
             </div>
@@ -52,37 +52,40 @@ export const BookWorthSection: React.FC<Props> = ({
               ${verifiedTotal.toLocaleString()}
             </div>
             <p className="text-[11px] text-emerald-400/80 mt-1">
-              Supported by executed contracts and audited force/plant fleet records.
-            </p>
-          </div>
-
-          <div className="p-4 bg-amber-500/10 border border-amber-500/25 rounded-lg">
-            <div className="flex items-center justify-between">
-              <span className="text-xs uppercase tracking-wider font-semibold text-amber-400">
-                Customer Champion Pipeline
-              </span>
-              <AlertCircle className="w-4 h-4 text-amber-400" />
-            </div>
-            <div className="text-2xl font-bold text-amber-300 mt-2 font-mono">
-              ${customerClaimTotal.toLocaleString()}
-            </div>
-            <p className="text-[11px] text-amber-400/80 mt-1">
-              Verbal aspirations & tender ceilings; excluded from confirmed book revenue.
+              Evidence-backed qualified renewal baseline. Note: Contractually confirmed revenue is unverified ($0 signed contracts in MCP).
             </p>
           </div>
 
           <div className="p-4 bg-indigo-500/10 border border-indigo-500/25 rounded-lg">
             <div className="flex items-center justify-between">
               <span className="text-xs uppercase tracking-wider font-semibold text-indigo-400">
-                Unverified Estimates / Offers
+                Qualified Pipeline Baseline
               </span>
-              <FileSpreadsheet className="w-4 h-4 text-indigo-400" />
+              <AlertCircle className="w-4 h-4 text-indigo-400" />
             </div>
             <div className="text-2xl font-bold text-indigo-300 mt-2 font-mono">
-              ${unverifiedEstimateTotal.toLocaleString()}
+              ${customerClaimTotal.toLocaleString()}
             </div>
             <p className="text-[11px] text-indigo-400/80 mt-1">
-              Open offers & scoping estimates pending customer budget approval.
+              Qualified operational pipeline (excludes speculative ceilings & expired deals).
+            </p>
+          </div>
+
+          <div className="p-4 bg-amber-500/10 border border-amber-500/25 rounded-lg">
+            <div className="flex items-center justify-between">
+              <span className="text-xs uppercase tracking-wider font-semibold text-amber-400">
+                Speculative Pipeline Ceilings
+              </span>
+              <FileSpreadsheet className="w-4 h-4 text-amber-400" />
+            </div>
+            <div className="text-2xl font-bold text-amber-300 mt-2 font-mono">
+              ${deals
+                .filter((d) => d.speculativeCeiling != null)
+                .reduce((sum, d) => sum + (d.speculativeCeiling || 0), 0)
+                .toLocaleString()}
+            </div>
+            <p className="text-[11px] text-amber-400/80 mt-1">
+              Speculative maximum claims (Tender $1.5M / Sister €1.2M). Idle plant excluded (null ceiling).
             </p>
           </div>
         </div>

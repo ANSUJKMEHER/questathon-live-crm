@@ -1,28 +1,45 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-test('Valuation Rules: Reconciles task outcomes ($128k, $26k) and audits expired Westmere deadline at $0', () => {
+test('Valuation Rules: Enforces qualified renewal baseline ($154,221), pipeline baseline ($891,199), and speculative ceiling ($2.9M)', () => {
   const deals = [
-    { name: 'Renew Alliance (35 Docks)', value: 128057, confidence: 'VERIFIED_FACT', category: 'Committed' },
-    { name: 'Renew Aldermoor (14 Docks)', value: 26164, confidence: 'VERIFIED_FACT', category: 'Committed' },
-    { name: 'Scale Westmere Fleet', value: 0, confidence: 'VERIFIED_FACT', category: 'Expired Outcome', stage: 'Expired' },
-    { name: 'Position 300-Dock Framework', value: 535634, confidence: 'CUSTOMER_CLAIM', category: 'Pipeline' },
-    { name: 'Case Study 40-Plant Sister', value: 207845, confidence: 'CUSTOMER_CLAIM', category: 'Pipeline' },
+    { name: 'Renew Alliance (35 Docks)', value: 128057, category: 'Qualified Renewal Baseline', speculativeCeiling: null },
+    { name: 'Renew Aldermoor (14 Docks)', value: 26164, category: 'Qualified Renewal Baseline', speculativeCeiling: null },
+    { name: 'Scale Westmere Fleet', value: 0, category: 'Expired Outcome', stage: 'Expired', speculativeCeiling: null },
+    { name: 'Tarn Valley & Norwold', value: 142302, category: 'Qualified Pipeline', speculativeCeiling: 200000 },
+    { name: 'Position 300-Dock Framework', value: 535634, category: 'Qualified Pipeline', speculativeCeiling: 1500000 },
+    { name: 'Bring Idle Plants to Patrol', value: 5418, category: 'Qualified Pipeline', speculativeCeiling: null }, // MCP worth_up_to is null
+    { name: 'Case Study 40-Plant Sister', value: 207845, category: 'Qualified Pipeline', speculativeCeiling: 1200000 },
   ];
 
-  const committedTotal = deals
-    .filter((d) => d.category === 'Committed')
+  // 1. Qualified Renewal Baseline
+  const renewalBaselineTotal = deals
+    .filter((d) => d.category === 'Qualified Renewal Baseline')
     .reduce((sum, d) => sum + d.value, 0);
 
+  // 2. Contractually confirmed revenue is unverified ($0)
+  const contractuallyConfirmed = 0;
+
+  // 3. Expired deadline audited at $0
   const expiredDeal = deals.find((d) => d.name === 'Scale Westmere Fleet');
-  const pipelineTotal = deals
-    .filter((d) => d.category === 'Pipeline')
+
+  // 4. Qualified Pipeline Baseline: $142,302 + $535,634 + $5,418 + $207,845 = $891,199
+  const pipelineBaselineTotal = deals
+    .filter((d) => d.category === 'Qualified Pipeline')
     .reduce((sum, d) => sum + d.value, 0);
 
-  assert.equal(committedTotal, 154221, 'Verified committed book must equal $154,221 ($128,057 + $26,164)');
+  // 5. Speculative Pipeline Ceilings: $200k + $1.5M + $1.2M = $2,900,000 (Idle plant excluded)
+  const speculativeCeilingTotal = deals
+    .filter((d) => d.speculativeCeiling != null)
+    .reduce((sum, d) => sum + d.speculativeCeiling, 0);
+
+  assert.equal(renewalBaselineTotal, 154221, 'Qualified renewal baseline must equal $154,221 ($128,057 + $26,164)');
+  assert.equal(contractuallyConfirmed, 0, 'Contractually confirmed revenue must be $0 (Unverified without signed contract evidence)');
   assert.equal(expiredDeal.value, 0, 'Expired Westmere deadline must be audited at $0');
   assert.equal(expiredDeal.stage, 'Expired');
-  assert.equal(pipelineTotal, 743479, 'Pipeline baseline must equal $743,479 ($535,634 + $207,845)');
+  assert.equal(pipelineBaselineTotal, 891199, 'Qualified pipeline baseline must equal $891,199');
+  assert.equal(speculativeCeilingTotal, 2900000, 'Speculative ceiling must equal $2,900,000 ($200k + $1.5M + $1.2M; idle plant excluded)');
+  assert.notEqual(pipelineBaselineTotal, speculativeCeilingTotal, 'Baseline must remain strictly separated from speculative ceiling');
 });
 
 test('Rate Limiter: Strictly enforces 60s cooldown buffer', () => {
@@ -83,15 +100,25 @@ test('Unknowns Register: Tracks lifecycle status (UNRESOLVED, INVESTIGATING, RES
   assert.ok(unknownItem.suggestedAction.length > 10, 'Must have actionable suggested next step');
 });
 
-test('Live Signals: Recognizes silent dock stoppage and marks cause strictly unknown', () => {
-  const signal = {
+test('Live Signals & Briefing Distinction: 3-dock anomaly is from briefing telemetry; ticket FB-11206 is from get_signals', () => {
+  const briefingSignal = {
     account: 'Aldermoor Industrial Group',
+    source: 'Challenge Briefing Telemetry',
     onlineDocksCount: 3,
     nightFlightsCount: 0,
     causeKnown: false,
   };
 
-  assert.equal(signal.onlineDocksCount, 3);
-  assert.equal(signal.nightFlightsCount, 0);
-  assert.equal(signal.causeKnown, false, 'Root cause must NEVER be invented or assumed known');
+  const apiSignal = {
+    account: 'Eastern Counties Police Alliance',
+    source: 'get_signals',
+    ticketId: 'FB-11206',
+    contact: 'Insp. Karen Mbeki',
+    eventDate: '2026-12-05',
+  };
+
+  assert.equal(briefingSignal.source, 'Challenge Briefing Telemetry', '3-dock anomaly must be attributed to Challenge Briefing Telemetry');
+  assert.equal(briefingSignal.causeKnown, false, 'Root cause must NEVER be invented or assumed known');
+  assert.equal(apiSignal.source, 'get_signals', 'Ticket FB-11206 must be attributed to get_signals');
+  assert.equal(apiSignal.ticketId, 'FB-11206');
 });

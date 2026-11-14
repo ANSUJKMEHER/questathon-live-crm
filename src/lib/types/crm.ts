@@ -24,8 +24,10 @@ export interface Deal {
   displayValue: string;
   taskBaselineValue?: string;
   taskOutcomeStatus?: 'Qualified' | 'Blocker Cleared' | 'Deadline Passed ($0)' | 'Identified' | 'Never Heard Of';
-  stage: 'Discovery' | 'Proposal' | 'Negotiation' | 'Committed' | 'Delivered' | 'On Hold' | 'Blocked' | 'Expired';
-  category: 'Committed' | 'Pipeline' | 'Agreed' | 'Delivered' | 'Unverified Estimate' | 'Expired Outcome';
+  stage: 'Discovery' | 'Proposal' | 'Negotiation' | 'Qualified' | 'Committed' | 'Delivered' | 'On Hold' | 'Blocked' | 'Expired';
+  category: 'Qualified Renewal Baseline' | 'Qualified Pipeline' | 'Committed' | 'Pipeline' | 'Agreed' | 'Delivered' | 'Unverified Estimate' | 'Expired Outcome';
+  speculativeCeiling?: number | null;
+  speculativeCeilingDisplay?: string;
   blocker: string;
   decisionMaker: string;
   evidenceSource: EvidenceSource;
@@ -147,8 +149,12 @@ export interface AccountSummary {
   shortCode: 'ACCOUNT_A' | 'ACCOUNT_B';
   healthStatus: 'HEALTHY' | 'WARNING' | 'CRITICAL';
   primaryInternalOwner: string;
-  verifiedBookValue: number;
-  unverifiedPipelineValue: number;
+  qualifiedRenewalBaseline: number;
+  contractuallyConfirmedTotal: number;
+  qualifiedPipelineBaseline: number;
+  speculativeCeilingTotal: number;
+  verifiedBookValue: number; // Backwards-compatible alias for qualifiedRenewalBaseline
+  unverifiedPipelineValue: number; // Backwards-compatible alias for qualifiedPipelineBaseline
   activeDealsCount: number;
   criticalRisksCount: number;
   topActionsCount: number;
@@ -162,8 +168,12 @@ export interface AccountQuestionsAnswers {
   accountCode: 'ACCOUNT_A' | 'ACCOUNT_B';
   q1_bookWorth: {
     summary: string;
-    verifiedValue: number;
-    customerClaimValue: number;
+    qualifiedRenewalBaseline: number;
+    contractuallyConfirmedTotal: number;
+    qualifiedPipelineBaseline: number;
+    speculativeCeilingTotal: number;
+    verifiedValue: number; // Backwards-compatible alias for qualifiedRenewalBaseline
+    customerClaimValue: number; // Backwards-compatible alias for qualifiedPipelineBaseline
     unverifiedEstimateValue: number;
     deals: Deal[];
   };

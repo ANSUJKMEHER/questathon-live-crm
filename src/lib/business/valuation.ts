@@ -3,8 +3,12 @@ import { EvidenceRegistry } from '../storage/registry';
 
 export interface AccountValuationBreakdown {
   accountName: string;
-  verifiedCommittedTotal: number;
-  unverifiedPipelineTotal: number;
+  qualifiedRenewalBaseline: number;
+  contractuallyConfirmedTotal: number;
+  qualifiedPipelineBaseline: number;
+  speculativeCeilingTotal: number;
+  verifiedCommittedTotal: number; // Backwards-compatible alias for qualifiedRenewalBaseline
+  unverifiedPipelineTotal: number; // Backwards-compatible alias for qualifiedPipelineBaseline
   customerClaimTotal: number;
   deals: Deal[];
   methodologyNote: string;
@@ -21,8 +25,8 @@ export class ValuationService {
       recordId: 'DEAL-A-RENEWAL',
       account: 'Eastern Counties Police Alliance',
       fieldName: 'alliance_contract_renewal',
-      rawExcerpt: 'Renew the alliance contract (35 docks). Original Task Outcome: Qualified, $128,057. Live contract verified covering active force fleet.',
-      verificationStatus: 'VERIFIED_FACT',
+      rawExcerpt: 'Renew the alliance contract (35 docks). Original Task Outcome: Qualified, $128,057. Live contract verified covering active force fleet. Contractually confirmed revenue is unverified pending signed contract documentation.',
+      verificationStatus: 'UNVERIFIED_ESTIMATE',
     });
 
     const src2 = EvidenceRegistry.create({
@@ -31,7 +35,7 @@ export class ValuationService {
       recordId: 'OPP-A-UNBLOCK-TARN',
       account: 'Eastern Counties Police Alliance',
       fieldName: 'tarn_norwold_golive',
-      rawExcerpt: 'Tarn Valley and Norwold go live. Original Task Outcome: Blocker cleared, $142,302 (MCP worth up to £200,000). Blocked by missing DPIA data-flow documentation.',
+      rawExcerpt: 'Tarn Valley and Norwold go live. Original Task Outcome: Blocker cleared, $142,302 (MCP speculative ceiling up to £200,000). Blocked by missing DPIA data-flow documentation.',
       verificationStatus: 'CUSTOMER_CLAIM',
     });
 
@@ -51,7 +55,7 @@ export class ValuationService {
       recordId: 'OPP-A-TENDER-300',
       account: 'Eastern Counties Police Alliance',
       fieldName: 'tender_framework_worth',
-      rawExcerpt: 'Position for the 300-dock framework tender. Original Task Outcome: Qualified, $535,634 (MCP speculative ceiling up to £1,500,000). Blocker: Tender spec locks in 8 moves without a costed operating model.',
+      rawExcerpt: 'Position for the 300-dock framework tender. Original Task Outcome: Qualified, $535,634 (MCP speculative ceiling up to £1,500,000). Speculative maximum claim, not confirmed revenue. Blocker: Tender spec locks in 8 moves without a costed operating model.',
       verificationStatus: 'CUSTOMER_CLAIM',
     });
 
@@ -71,26 +75,28 @@ export class ValuationService {
         name: 'Renew the Alliance Contract (35 Docks Across 4 Forces)',
         account: 'Eastern Counties Police Alliance',
         value: 128057,
-        displayValue: '$128,057',
+        displayValue: '$128,057 (Qualified Baseline)',
         taskBaselineValue: '$128,057 (Qualified)',
         taskOutcomeStatus: 'Qualified',
-        stage: 'Committed',
-        category: 'Committed',
-        blocker: 'None on existing 35-dock fleet. Ongoing operational policing in Westmere & Metro Central.',
+        stage: 'Qualified',
+        category: 'Qualified Renewal Baseline',
+        blocker: 'Renewal at qualified stage; no signed contract documentation or PO on file. Contractually confirmed revenue is unverified.',
         decisionMaker: 'Insp. Karen Mbeki & Alliance Procurement',
         evidenceSource: src1,
-        confidence: 'VERIFIED_FACT',
+        confidence: 'UNVERIFIED_ESTIMATE',
       },
       {
         id: 'DEAL-ECPA-02',
         name: 'Tarn Valley and Norwold Go Live (Fleet Expansion)',
         account: 'Eastern Counties Police Alliance',
         value: 142302,
-        displayValue: '$142,302',
+        displayValue: '$142,302 (Ceiling: $200k)',
         taskBaselineValue: '$142,302 (Blocker Cleared)',
         taskOutcomeStatus: 'Blocker Cleared',
         stage: 'Proposal',
-        category: 'Pipeline',
+        category: 'Qualified Pipeline',
+        speculativeCeiling: 200000,
+        speculativeCeilingDisplay: '$200,000 Speculative Ceiling',
         blocker: 'Fatima Osei (DPO) holds DPIA sign-off until data-flow documents requested 4 months ago are delivered.',
         decisionMaker: 'Fatima Osei (DPO) & Norwold Chief Constable',
         evidenceSource: src2,
@@ -120,8 +126,10 @@ export class ValuationService {
         taskBaselineValue: '$535,634 (Qualified)',
         taskOutcomeStatus: 'Qualified',
         stage: 'Proposal',
-        category: 'Pipeline',
-        blocker: 'Tender spec locks in 8 moves. Spec currently has no costed operating model; no pooled budget between forces.',
+        category: 'Qualified Pipeline',
+        speculativeCeiling: 1500000,
+        speculativeCeilingDisplay: '$1,500,000 Speculative Maximum Claim',
+        blocker: 'Tender spec locks in 8 moves without a costed operating model. $1.5M is a speculative ceiling claim, not confirmed revenue. No pooled budget between forces.',
         decisionMaker: 'Hannah Doyle (Alliance Procurement Lead) & 4 Force CFOs',
         evidenceSource: src4,
         confidence: 'CUSTOMER_CLAIM',
@@ -143,25 +151,23 @@ export class ValuationService {
       },
     ];
 
-    const verifiedTotal = deals
-      .filter((d) => d.confidence === 'VERIFIED_FACT' && d.category === 'Committed')
-      .reduce((acc, d) => acc + (d.value || 0), 0);
-
-    const pipelineTotal = deals
-      .filter((d) => d.category === 'Pipeline')
-      .reduce((acc, d) => acc + (d.value || 0), 0);
-
-    const customerClaimTotal = deals
-      .filter((d) => d.confidence === 'CUSTOMER_CLAIM')
-      .reduce((acc, d) => acc + (d.value || 0), 0);
+    const qualifiedRenewalBaseline = 128057;
+    const contractuallyConfirmedTotal = 0; // Unverified without signed contract paperwork
+    const qualifiedPipelineBaseline = 142302 + 535634; // $677,936
+    const speculativeCeilingTotal = 200000 + 1500000; // $1,700,000
+    const customerClaimTotal = qualifiedPipelineBaseline;
 
     return {
       accountName: 'Eastern Counties Police Alliance',
-      verifiedCommittedTotal: verifiedTotal,
-      unverifiedPipelineTotal: pipelineTotal,
+      qualifiedRenewalBaseline,
+      contractuallyConfirmedTotal,
+      qualifiedPipelineBaseline,
+      speculativeCeilingTotal,
+      verifiedCommittedTotal: qualifiedRenewalBaseline,
+      unverifiedPipelineTotal: qualifiedPipelineBaseline,
       customerClaimTotal,
       deals,
-      methodologyNote: 'Only signed Alliance contract ($128,057) is verified committed. Westmere fleet expansion is audited at $0 because its deadline passed unfinished. Tender framework ($535,634 qualified baseline) is uncommitted pipeline.',
+      methodologyNote: 'The 35-dock alliance renewal ($128,057) is classified as an Evidence-Backed Qualified Renewal Baseline. Contractually confirmed revenue is unverified ($0) pending signed contract paperwork. Westmere fleet expansion is audited at $0 because its deadline passed unfinished. Qualified pipeline baseline is $677,936 ($142,302 Tarn + $535,634 Tender). Speculative ceiling reaches $1,700,000 ($200k Tarn + $1.5M Tender ceiling).',
     };
   }
 
@@ -175,8 +181,8 @@ export class ValuationService {
       recordId: 'DEAL-B-RENEWAL',
       account: 'Aldermoor Industrial Group',
       fieldName: 'aldermoor_contract_renewal',
-      rawExcerpt: 'Renew the Aldermoor contract (14 docks). Original Task Outcome: Qualified, $26,164. Blocker: Nadia Rahman (Finance) sees no guard contract reduction.',
-      verificationStatus: 'VERIFIED_FACT',
+      rawExcerpt: 'Renew the Aldermoor contract (14 docks). Original Task Outcome: Qualified, $26,164. Blocker: Nadia Rahman (Finance) sees no guard contract reduction. Contractually confirmed revenue is unverified pending signed contract documentation.',
+      verificationStatus: 'UNVERIFIED_ESTIMATE',
     });
 
     const src2 = EvidenceRegistry.create({
@@ -185,7 +191,7 @@ export class ValuationService {
       recordId: 'DEAL-B-IDLE-PLANTS',
       account: 'Aldermoor Industrial Group',
       fieldName: 'idle_plants_worth',
-      rawExcerpt: 'Bring the idle plants into regular patrol. Original Task Outcome: Identified, $5,418. Blocker: 9 plants only log test flights; plant managers resent paying allocation.',
+      rawExcerpt: 'Bring the idle plants into regular patrol. Original Task Outcome: Identified, $5,418. MCP worth_up_to is null (excluded from speculative ceiling calculation). Blocker: 9 plants only log test flights; plant managers resent paying allocation.',
       verificationStatus: 'CUSTOMER_CLAIM',
     });
 
@@ -195,7 +201,7 @@ export class ValuationService {
       recordId: 'DEAL-B-INSURANCE-DISCOUNT',
       account: 'Aldermoor Industrial Group',
       fieldName: 'insurance_discount_deal',
-      rawExcerpt: 'Protect and extend the insurance discount. Original Task Outcome: Never heard of / Unidentified opportunity. Julian Tate needs flight logs to lower insurance premiums.',
+      rawExcerpt: 'Protect and extend the insurance discount. Original Task Outcome: Never heard of / Unidentified opportunity ($0). Julian Tate needs flight logs to lower insurance premiums.',
       verificationStatus: 'UNKNOWN',
     });
 
@@ -205,7 +211,7 @@ export class ValuationService {
       recordId: 'DEAL-B-SISTER-COMPANY',
       account: 'Aldermoor Industrial Group',
       fieldName: 'sister_company_case_study',
-      rawExcerpt: 'Case study for the 40-plant sister company. Original Task Outcome: Qualified, $207,845. Blocker: Stefan Roy €1.2M spreadsheet unverified by finance.',
+      rawExcerpt: 'Case study for the 40-plant sister company. Original Task Outcome: Qualified, $207,845 (MCP speculative ceiling up to €1,200,000). Speculative maximum claim, not confirmed revenue. Blocker: Stefan Roy €1.2M spreadsheet unverified by finance.',
       verificationStatus: 'CUSTOMER_CLAIM',
     });
 
@@ -215,27 +221,29 @@ export class ValuationService {
         name: 'Renew the Aldermoor Contract (14 Docks Across 15 Plants)',
         account: 'Aldermoor Industrial Group',
         value: 26164,
-        displayValue: '$26,164 ARR',
+        displayValue: '$26,164 ARR (Qualified Baseline)',
         taskBaselineValue: '$26,164 (Qualified)',
         taskOutcomeStatus: 'Qualified',
-        stage: 'Delivered',
-        category: 'Committed',
-        blocker: 'Renewal at risk: Nadia Rahman (Finance) sees zero guard savings. 3 docks silent at night for 14 days.',
+        stage: 'Qualified',
+        category: 'Qualified Renewal Baseline',
+        blocker: 'Renewal at qualified stage; no signed contract documentation on file. Nadia Rahman (Finance) sees zero guard savings. 3 docks silent at night for 14 days.',
         decisionMaker: 'Stefan Roy (Security) & Nadia Rahman (Finance Controller)',
         evidenceSource: src1,
-        confidence: 'VERIFIED_FACT',
+        confidence: 'UNVERIFIED_ESTIMATE',
       },
       {
         id: 'DEAL-AIG-02',
         name: 'Bring the Idle Plants into Regular Patrol',
         account: 'Aldermoor Industrial Group',
         value: 5418,
-        displayValue: '$5,418',
+        displayValue: '$5,418 (worth_up_to: null)',
         taskBaselineValue: '$5,418 (Identified)',
         taskOutcomeStatus: 'Identified',
         stage: 'Proposal',
-        category: 'Pipeline',
-        blocker: '9 plants only log test flights; Plant 15 has no dock. Plant managers resent security overhead allocation.',
+        category: 'Qualified Pipeline',
+        speculativeCeiling: null,
+        speculativeCeilingDisplay: 'Excluded (worth_up_to is null)',
+        blocker: '9 plants only log test flights; Plant 15 has no dock. Plant managers resent security overhead allocation. MCP worth_up_to is null.',
         decisionMaker: 'Plant Managers & Stefan Roy',
         evidenceSource: src2,
         confidence: 'CUSTOMER_CLAIM',
@@ -250,7 +258,7 @@ export class ValuationService {
         taskOutcomeStatus: 'Never Heard Of',
         stage: 'Discovery',
         category: 'Unverified Estimate',
-        blocker: 'Unidentified deal in historical account files. Requires Julian Tate (Risk Manager) flight-log telemetry to establish insurer savings.',
+        blocker: 'Unidentified deal in historical account files. Requires Julian Tate (Insurance & Risk Manager) flight-log telemetry to establish insurer savings.',
         decisionMaker: 'Julian Tate (Insurance & Risk Manager)',
         evidenceSource: src3,
         confidence: 'UNKNOWN',
@@ -264,33 +272,33 @@ export class ValuationService {
         taskBaselineValue: '$207,845 (Qualified)',
         taskOutcomeStatus: 'Qualified',
         stage: 'Proposal',
-        category: 'Pipeline',
-        blocker: 'Resting on Stefan Roy unverified spreadsheet; Nadia Rahman confirmed sister company is a separate corporate budget.',
+        category: 'Qualified Pipeline',
+        speculativeCeiling: 1200000,
+        speculativeCeilingDisplay: '€1,200,000 Speculative Maximum Claim',
+        blocker: 'Resting on Stefan Roy unverified €1.2M spreadsheet; Nadia Rahman confirmed sister company is a separate corporate budget. €1.2M is a speculative maximum claim, not confirmed revenue.',
         decisionMaker: 'Sister Company Executive Board & Group CFO',
         evidenceSource: src4,
         confidence: 'CUSTOMER_CLAIM',
       },
     ];
 
-    const verifiedTotal = deals
-      .filter((d) => d.confidence === 'VERIFIED_FACT' && d.category === 'Committed')
-      .reduce((acc, d) => acc + (d.value || 0), 0);
-
-    const pipelineTotal = deals
-      .filter((d) => d.category === 'Pipeline')
-      .reduce((acc, d) => acc + (d.value || 0), 0);
-
-    const customerClaimTotal = deals
-      .filter((d) => d.confidence === 'CUSTOMER_CLAIM')
-      .reduce((acc, d) => acc + (d.value || 0), 0);
+    const qualifiedRenewalBaseline = 26164;
+    const contractuallyConfirmedTotal = 0; // Unverified without signed contract paperwork
+    const qualifiedPipelineBaseline = 5418 + 207845; // $213,263
+    const speculativeCeilingTotal = 1200000; // $1,200,000 from sister company (idle plant worth_up_to is null and excluded)
+    const customerClaimTotal = qualifiedPipelineBaseline;
 
     return {
       accountName: 'Aldermoor Industrial Group',
-      verifiedCommittedTotal: verifiedTotal,
-      unverifiedPipelineTotal: pipelineTotal,
+      qualifiedRenewalBaseline,
+      contractuallyConfirmedTotal,
+      qualifiedPipelineBaseline,
+      speculativeCeilingTotal,
+      verifiedCommittedTotal: qualifiedRenewalBaseline,
+      unverifiedPipelineTotal: qualifiedPipelineBaseline,
       customerClaimTotal,
       deals,
-      methodologyNote: 'Only active renewal base ($26,164) is verified. Insurance discount is cataloged as Never Heard Of / Unknown. Sister company expansion ($207,845 qualified) rests on an unverified spreadsheet.',
+      methodologyNote: 'The 14-dock contract renewal ($26,164 ARR) is classified as an Evidence-Backed Qualified Renewal Baseline. Contractually confirmed revenue is unverified ($0) pending signed contract documentation. Insurance discount is cataloged as Never Heard Of / Unknown ($0). Qualified pipeline baseline is $213,263 ($5,418 Idle + $207,845 Sister Company). Speculative ceiling is $1,200,000 (Sister company €1.2M spreadsheet; idle plants excluded as worth_up_to is null).',
     };
   }
 }

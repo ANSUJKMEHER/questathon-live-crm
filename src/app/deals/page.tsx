@@ -24,13 +24,17 @@ export default function DealsPage() {
     return matchesAccount && matchesStatus;
   });
 
-  const verifiedSum = filteredDeals
-    .filter((d) => d.confidence === 'VERIFIED_FACT' && d.category === 'Committed')
+  const renewalBaselineSum = filteredDeals
+    .filter((d) => d.category === 'Qualified Renewal Baseline')
     .reduce((acc, d) => acc + (d.value || 0), 0);
 
-  const claimSum = filteredDeals
-    .filter((d) => d.confidence === 'CUSTOMER_CLAIM')
+  const pipelineBaselineSum = filteredDeals
+    .filter((d) => d.category === 'Qualified Pipeline')
     .reduce((acc, d) => acc + (d.value || 0), 0);
+
+  const speculativeCeilingSum = filteredDeals
+    .filter((d) => d.speculativeCeiling != null)
+    .reduce((acc, d) => acc + (d.speculativeCeiling || 0), 0);
 
   return (
     <div className="space-y-6">
@@ -76,35 +80,50 @@ export default function DealsPage() {
       </div>
 
       {/* Revenue Verification Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-4 bg-emerald-500/10 border border-emerald-500/25 rounded-xl flex items-center justify-between">
           <div>
             <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">
-              Filtered Verified Committed Value
+              Qualified Renewal Baseline
             </span>
             <div className="text-2xl font-bold text-emerald-300 mt-1 font-mono">
-              ${verifiedSum.toLocaleString()}
+              ${renewalBaselineSum.toLocaleString()}
             </div>
             <p className="text-[11px] text-emerald-400/80 mt-0.5">
-              Audited against executed contracts (ECPA $128k + Aldermoor $26k).
+              ECPA $128k + Aldermoor $26k (Qualified). Note: Contractually confirmed revenue is unverified ($0 signed contracts).
             </p>
           </div>
-          <ShieldCheck className="w-8 h-8 text-emerald-400/50" />
+          <ShieldCheck className="w-7 h-7 text-emerald-400/50 shrink-0" />
+        </div>
+
+        <div className="p-4 bg-indigo-500/10 border border-indigo-500/25 rounded-xl flex items-center justify-between">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400">
+              Qualified Pipeline Baseline
+            </span>
+            <div className="text-2xl font-bold text-indigo-300 mt-1 font-mono">
+              ${pipelineBaselineSum.toLocaleString()}
+            </div>
+            <p className="text-[11px] text-indigo-400/80 mt-0.5">
+              Tarn $142k + Tender $536k + Idle $5.4k + Sister $208k (Total: $891,199).
+            </p>
+          </div>
+          <AlertCircle className="w-7 h-7 text-indigo-400/50 shrink-0" />
         </div>
 
         <div className="p-4 bg-amber-500/10 border border-amber-500/25 rounded-xl flex items-center justify-between">
           <div>
             <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">
-              Filtered Customer Champion Pipeline
+              Speculative Pipeline Ceilings
             </span>
             <div className="text-2xl font-bold text-amber-300 mt-1 font-mono">
-              ${claimSum.toLocaleString()}
+              ${speculativeCeilingSum.toLocaleString()}
             </div>
             <p className="text-[11px] text-amber-400/80 mt-0.5">
-              Tender ceilings & verbal expansions; uncommitted by budget holders.
+              Tarn $200k + Tender $1.5M + Sister $1.2M ($2.9M). Idle plant excluded (null).
             </p>
           </div>
-          <AlertCircle className="w-8 h-8 text-amber-400/50" />
+          <AlertCircle className="w-7 h-7 text-amber-400/50 shrink-0" />
         </div>
       </div>
 

@@ -7,33 +7,36 @@ export class LiveSignalsService {
     accountBLiveEvents: LiveEventItem[];
     allEvents: LiveEventItem[];
   } {
+    // 1. ECPA Ticket FB-11206 (API-derived from get_signals -> A/requests.csv & email)
     EvidenceRegistry.create({
       id: 'SRC-SIG-ECPA-URGENT',
       toolName: 'get_signals',
       recordId: 'SIG-ECPA-URGENT-REQUEST',
       account: 'Eastern Counties Police Alliance',
       fieldName: 'ticket_fb_11206',
-      rawExcerpt: 'Insp. Karen Mbeki wrote directly and logged Ticket FB-11206 ahead of 5 Dec public event. Demanded two written commitments this week: (1) Operator training dates, (2) Who answers if dock fails on the day. Status: Open/Unassigned.',
+      rawExcerpt: 'API get_signals (A/requests.csv & A/emails/2026-11-18_karen_event.txt): Insp. Karen Mbeki wrote directly and logged Ticket FB-11206 ahead of 5 Dec public event. Demanded two written commitments this week: (1) Operator training dates, (2) Who answers if dock fails on the day. Status: Open/Unassigned.',
       verificationStatus: 'VERIFIED_FACT',
     });
 
+    // 2. ECPA Rhys Calder Departure (API-derived from get_signals -> A/emails/2026-11-17_rhys_moving.txt)
     EvidenceRegistry.create({
       id: 'SRC-SIG-ECPA-CHAMPION',
       toolName: 'get_signals',
       recordId: 'SIG-ECPA-CHAMPION-LEAVES',
       account: 'Eastern Counties Police Alliance',
       fieldName: 'resignation_notice',
-      rawExcerpt: 'Email from Rhys Calder (17 Nov 2026): Confirmed departure from drone programme in January. No successor named yet. 100% of calls on file were with him alone.',
+      rawExcerpt: 'API get_signals (A/emails/2026-11-17_rhys_moving.txt): Email from Rhys Calder (17 Nov 2026): Confirmed departure from drone programme in January. No successor named yet. 100% of calls on file were with him alone.',
       verificationStatus: 'VERIFIED_FACT',
     });
 
+    // 3. Aldermoor 3-Dock Anomaly (Originated from Challenge Briefing Telemetry, NOT get_signals API)
     EvidenceRegistry.create({
       id: 'SRC-SIG-AIG-DOCKS',
-      toolName: 'get_signals',
-      recordId: 'SIG-AIG-DOCK-ANOMALY',
+      toolName: 'Challenge Briefing Telemetry',
+      recordId: 'BRIEFING-AIG-DOCK-ANOMALY',
       account: 'Aldermoor Industrial Group',
       fieldName: 'telemetry_anomaly',
-      rawExcerpt: 'Live Telemetry Audit: 3 perimeter docks that normally fly most nights stopped flying during the last 2 weeks. All 3 remain online. No support ticket raised. Cause is STRICTLY UNKNOWN.',
+      rawExcerpt: 'Challenge Briefing Telemetry Audit: 3 perimeter docks that normally fly most nights stopped flying during the last 2 weeks. All 3 remain powered and online. No support ticket raised. Root cause is STRICTLY UNKNOWN.',
       verificationStatus: 'VERIFIED_FACT',
     });
 
@@ -44,7 +47,7 @@ export class LiveSignalsService {
         title: 'Overdue Written Response to Insp. Karen Mbeki (Ticket FB-11206)',
         account: 'Eastern Counties Police Alliance',
         eventType: 'CUSTOMER_COMMITMENT',
-        description: 'Insp. Karen Mbeki logged Ticket FB-11206 demanding two things in writing before the 5 December public demonstration: (1) Operator training calendar slots, and (2) Named on-call escalation engineer for dock failure on the day. No reply has been dispatched.',
+        description: 'Insp. Karen Mbeki logged Ticket FB-11206 (verified in get_signals -> A/requests.csv) demanding two things in writing before the 5 December public demonstration: (1) Operator training calendar slots, and (2) Named on-call escalation engineer for dock failure on the day. No reply has been dispatched.',
         detectedAt: '2026-11-18T09:00:00.000Z',
         operationalStatus: 'Critical Overdue - Support Ticket FB-11206 Unassigned',
         internalOwner: 'Customer Success Manager',
@@ -62,7 +65,7 @@ export class LiveSignalsService {
         title: 'Single-Threaded Champion Handover: Rhys Calder January Departure',
         account: 'Eastern Counties Police Alliance',
         eventType: 'PERSONNEL_CHANGE',
-        description: 'Rhys Calder notified FlytBase that he is stepping down from the alliance drone programme in January. Every single historical meeting and call log was with him alone. No successor has been named.',
+        description: 'Rhys Calder notified FlytBase via email (verified in get_signals) that he is stepping down from the alliance drone programme in January. Every single historical meeting and call log was with him alone. No successor has been named.',
         detectedAt: '2026-11-17T09:00:00.000Z',
         operationalStatus: 'High Risk - Succession Vacancy',
         internalOwner: 'Enterprise Account Executive',
@@ -77,14 +80,14 @@ export class LiveSignalsService {
       },
     ];
 
-    // Account B Events
+    // Account B Events (Source: Challenge Briefing Telemetry)
     const accountBLiveEvents: LiveEventItem[] = [
       {
         id: 'EVT-AIG-01',
         title: 'Telemetry Anomaly: 3 Docks Stopped Flying at Night (Last 14 Days)',
         account: 'Aldermoor Industrial Group',
         eventType: 'OPERATIONAL_ANOMALY',
-        description: 'Three perimeter docks that normally fly nightly patrols have stopped launching missions over the last two weeks. All three remain powered and online. No support ticket has been raised by Aldermoor and no user reported it.',
+        description: 'Challenge Briefing Telemetry Audit: Three perimeter docks that normally fly nightly patrols have stopped launching missions over the last two weeks. All three remain powered and online. No support ticket has been raised by Aldermoor and no user reported it.',
         detectedAt: new Date(Date.now() - 3600 * 1000 * 24 * 2).toISOString(),
         operationalStatus: 'Investigation In Progress - Silent Anomaly',
         internalOwner: 'Technical Support Lead & Telemetry Specialist',
@@ -94,7 +97,7 @@ export class LiveSignalsService {
           'Contact Stefan Roy and Beatriz Alonso with supportive check-in regarding night patrol operations.',
           'Log internal CRM check-in note to track diagnostic findings.',
         ],
-        sourceTool: 'get_signals (SIG-AIG-DOCK-ANOMALY)',
+        sourceTool: 'Challenge Briefing Telemetry (BRIEFING-AIG-DOCK-ANOMALY)',
         urgency: 'IMMEDIATE',
       },
     ];
