@@ -21,6 +21,9 @@ export class CrmAggregator {
     const stkA = PowerMapService.getAccountAStakeholders();
     const stkB = PowerMapService.getAccountBStakeholders();
 
+    const dpmA = PowerMapService.getAccountADealPowerMappings();
+    const dpmB = PowerMapService.getAccountBDealPowerMappings();
+
     const actA = ActionPrioritizationService.getAccountAActions();
     const actB = ActionPrioritizationService.getAccountBActions();
 
@@ -95,15 +98,16 @@ export class CrmAggregator {
       accountName: 'Eastern Counties Police Alliance',
       accountCode: 'ACCOUNT_A',
       q1_bookWorth: {
-        summary: 'Total verified committed value is £120,000 under active 14-dock constabulary deployments. Framework tender ceiling claim stands at £1,500,000, Westmere expansion pipeline at £250,000, and open training/support offers at £105,000.',
+        summary: 'Total verified committed value is $128,057 under executed alliance renewal (35 docks). Tarn Valley/Norwold expansion pipeline stands at $142,302 (Blocker cleared). Scale Westmere fleet is audited at $0 because its deadline passed unfinished. Framework tender qualified baseline is $535,634 (speculative ceiling up to $1.5M).',
         verifiedValue: valA.verifiedCommittedTotal,
         customerClaimValue: valA.customerClaimTotal,
-        unverifiedEstimateValue: 105000,
+        unverifiedEstimateValue: 55000,
         deals: valA.deals,
       },
       q2_powerHolders: {
-        summary: 'Insp. Karen Mbeki holds operational power over Westmere deployments; Hannah Doyle holds procurement authority for the 300-dock framework; Fatima Osei holds compliance veto on Tarn Valley & Norwold; Ewan Brooks controls finance sign-off.',
+        summary: 'Insp. Karen Mbeki holds operational power over Westmere deployments; Hannah Doyle holds procurement authority for the 300-dock framework; Fatima Osei holds compliance veto on Tarn Valley & Norwold; Ewan Brooks controls finance sign-off; Norwold Chief Constable is cautious on privacy.',
         stakeholders: stkA,
+        dealPowerMappings: dpmA,
       },
       q3_actionsFirst: {
         summary: '1. Deliver written response to Insp. Karen Mbeki committing operator training dates and dock escalation coverage before 5 Dec (Ticket FB-11206). 2. Dispatch data-flow docs to Fatima Osei to unblock Tarn Valley DPIA. 3. Submit costed operating model to Hannah Doyle before tender spec locks.',
@@ -125,15 +129,16 @@ export class CrmAggregator {
       accountName: 'Aldermoor Industrial Group',
       accountCode: 'ACCOUNT_B',
       q1_bookWorth: {
-        summary: 'Total verified recurring ARR is £140,000 under active 14-dock contract. Sister company expansion is a £1,200,000 speculative claim based on Stefan Roy\'s unverified €1.2M spreadsheet; open Plant 7 priority offer stands at £50,000.',
+        summary: 'Total verified recurring ARR is $26,164 under qualified renewal (14 docks). Idle plants expansion pipeline stands at $5,418. Insurance discount deal is Never Heard Of ($0). Sister company expansion qualified baseline is $207,845 (speculative ceiling up to €1.2M).',
         verifiedValue: valB.verifiedCommittedTotal,
         customerClaimValue: valB.customerClaimTotal,
-        unverifiedEstimateValue: 50000,
+        unverifiedEstimateValue: 0,
         deals: valB.deals,
       },
       q2_powerHolders: {
-        summary: 'Nadia Rahman (Group Finance Controller) is the decisive economic decision-maker on renewal; Stefan Roy is the internal champion whose ROI numbers are unverified; Beatriz Alonso manages Plant 7; Julian Tate controls insurance reporting.',
+        summary: 'Nadia Rahman (Group Finance Controller) is the decisive economic decision-maker on renewal; Stefan Roy is the internal champion whose ROI numbers are unverified; Beatriz Alonso manages Plant 7; Julian Tate controls insurance reporting; Owen Fitch (IT Lead) has NEVER BEEN MET by the player.',
         stakeholders: stkB,
+        dealPowerMappings: dpmB,
       },
       q3_actionsFirst: {
         summary: '1. Initiate proactive telemetry diagnostics on the 3 silent perimeter docks and notify Stefan Roy/Beatriz Alonso. 2. Present finance-grade ROI to Nadia Rahman mapped to 3 upcoming guard contract renewals. 3. Deliver Plant 7 night-time priority proposal.',
@@ -144,7 +149,7 @@ export class CrmAggregator {
         risks: rskB,
       },
       q5_stillNotKnow: {
-        summary: 'Unknown root cause of 3-dock night flight stoppage (cause is strictly unknown; avoid speculation), unknown why customer guards did not report it, and unconfirmed renewal dates for upcoming guard contracts.',
+        summary: 'Unknown root cause of 3-dock night flight stoppage (cause is strictly unknown; avoid speculation), unknown why customer guards did not report it, unconfirmed renewal dates for upcoming guard contracts, and Owen Fitch IT network requirements.',
         unknowns: unkB,
       },
       liveEvents: signals.accountBLiveEvents,
@@ -177,6 +182,7 @@ export class CrmAggregator {
       },
       allDeals: [...valA.deals, ...valB.deals],
       allStakeholders: [...stkA, ...stkB],
+      allDealPowerMappings: [...dpmA, ...dpmB],
       allActions: [...actA, ...actB],
       allRisks: [...rskA, ...rskB],
       allUnknowns: [...unkA, ...unkB],

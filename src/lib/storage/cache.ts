@@ -54,7 +54,12 @@ function getFsAndPath() {
     const fs = require('fs');
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const path = require('path');
-    const cacheFile = path.join(process.cwd(), 'data', 'cache.json');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const os = require('os');
+    
+    // In Vercel serverless environment, /tmp is the only writable directory
+    const baseDir = process.env.VERCEL ? os.tmpdir() : process.cwd();
+    const cacheFile = path.join(baseDir, 'data', 'cache.json');
     return { fs, path, cacheFile };
   } catch {
     return null;

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CrmAggregator } from '@/lib/business/crm-aggregator';
-import { CRMDataPayload, EvidenceSource, LiveEventItem } from '@/lib/types/crm';
+import { CRMDataPayload, EvidenceSource } from '@/lib/types/crm';
 import { BookWorthSection } from '@/components/questions/BookWorthSection';
 import { PowerMapSection } from '@/components/questions/PowerMapSection';
 import { ActionPlanSection } from '@/components/questions/ActionPlanSection';
@@ -92,6 +92,7 @@ export default function EasternCountiesPage() {
       {/* Question 2: Who holds the power? */}
       <PowerMapSection
         stakeholders={ans.q2_powerHolders.stakeholders}
+        dealPowerMappings={ans.q2_powerHolders.dealPowerMappings}
         summary={ans.q2_powerHolders.summary}
       />
 

@@ -25,7 +25,6 @@ export default function OverviewPage() {
   const [selectedSource, setSelectedSource] = useState<EvidenceSource | null>(null);
 
   useEffect(() => {
-    // Initial client render from aggregator
     setData(CrmAggregator.getAggregatedData());
   }, []);
 
@@ -56,7 +55,7 @@ export default function OverviewPage() {
               Executive CSM Cockpit
             </span>
             <span className="text-xs text-slate-400">
-              Dual-Account Command Center
+              Dual-Account Command Center • Reconciled
             </span>
           </div>
           <h1 className="text-2xl font-bold text-slate-100 tracking-tight mt-1">
@@ -91,11 +90,11 @@ export default function OverviewPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           title="Verified Committed Book"
-          value={`£${(
+          value={`$${(
             data.accounts.accountA.verifiedBookValue +
             data.accounts.accountB.verifiedBookValue
           ).toLocaleString()}`}
-          subtitle="Signed POs & Master Agreements"
+          subtitle="ECPA $128k + Aldermoor $26k"
           badge="Verified Fact"
           badgeColor="emerald"
           icon={ShieldCheck}
@@ -105,12 +104,12 @@ export default function OverviewPage() {
         />
 
         <MetricCard
-          title="Unverified Expansion Pipeline"
-          value={`£${(
+          title="Unverified Pipeline Ceilings"
+          value={`$${(
             data.answers.accountA.q1_bookWorth.customerClaimValue +
             data.answers.accountB.q1_bookWorth.customerClaimValue
           ).toLocaleString()}`}
-          subtitle="Customer Champion Claims"
+          subtitle="Tender & Sister Speculative Claims"
           badge="Uncommitted"
           badgeColor="amber"
           icon={TrendingUp}
@@ -130,9 +129,9 @@ export default function OverviewPage() {
 
         <MetricCard
           title="Next Critical Deadline"
-          value="05 Dec 2024"
-          subtitle="Police Public Demonstration"
-          badge="Event Showcase"
+          value="05 Dec 2026"
+          subtitle="Westmere Public Event Showcase"
+          badge="Ticket FB-11206"
           badgeColor="indigo"
           icon={Calendar}
         />
@@ -165,13 +164,13 @@ export default function OverviewPage() {
             <div>
               <span className="text-slate-400">Verified Book:</span>
               <div className="text-sm font-bold text-slate-200 font-mono">
-                £{data.accounts.accountA.verifiedBookValue.toLocaleString()}
+                ${data.accounts.accountA.verifiedBookValue.toLocaleString()}
               </div>
             </div>
             <div>
-              <span className="text-slate-400">Champion Pipeline:</span>
+              <span className="text-slate-400">Qualified Pipeline:</span>
               <div className="text-sm font-bold text-amber-400 font-mono">
-                £{data.answers.accountA.q1_bookWorth.customerClaimValue.toLocaleString()}
+                ${data.answers.accountA.q1_bookWorth.customerClaimValue.toLocaleString()}
               </div>
             </div>
             <div>
@@ -193,7 +192,7 @@ export default function OverviewPage() {
               Manager Alert:
             </span>
             <p className="leading-relaxed">
-              Karen Mbeki requires written commitment on training and event dock escalation before 5 Dec event. Rhys Calder departing in January with no named successor.
+              Ticket FB-11206: Karen Mbeki requires written commitment on training and event dock escalation before 5 Dec event. Rhys Calder departing in January with no named successor. Scale Westmere fleet expired at $0.
             </p>
           </div>
 
@@ -233,13 +232,13 @@ export default function OverviewPage() {
             <div>
               <span className="text-slate-400">Verified Book (ARR):</span>
               <div className="text-sm font-bold text-slate-200 font-mono">
-                £{data.accounts.accountB.verifiedBookValue.toLocaleString()}
+                ${data.accounts.accountB.verifiedBookValue.toLocaleString()}
               </div>
             </div>
             <div>
-              <span className="text-slate-400">Expansion Pipeline:</span>
+              <span className="text-slate-400">Pipeline Claims:</span>
               <div className="text-sm font-bold text-amber-400 font-mono">
-                £{data.answers.accountB.q1_bookWorth.customerClaimValue.toLocaleString()}
+                ${data.answers.accountB.q1_bookWorth.customerClaimValue.toLocaleString()}
               </div>
             </div>
             <div>
@@ -261,7 +260,7 @@ export default function OverviewPage() {
               Manager Alert:
             </span>
             <p className="leading-relaxed">
-              Silent anomaly: 3 perimeter docks stopped flying at night for 14 days while online. No customer ticket filed. Proactive investigation underway; cause strictly unknown.
+              Silent anomaly: 3 perimeter docks stopped flying at night for 14 days while online. Nadia Rahman refuses renewal without guard cost reduction. Owen Fitch (IT Lead) has never been met.
             </p>
           </div>
 
@@ -283,7 +282,7 @@ export default function OverviewPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider">
-                Audited Revenue Composition
+                Audited Revenue Composition ($)
               </h3>
               <p className="text-xs text-slate-400">
                 Strict separation of verified contracts vs uncommitted customer claims.

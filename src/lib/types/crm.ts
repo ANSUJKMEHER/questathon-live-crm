@@ -22,8 +22,10 @@ export interface Deal {
   account: string;
   value: number | null;
   displayValue: string;
-  stage: 'Discovery' | 'Proposal' | 'Negotiation' | 'Committed' | 'Delivered' | 'On Hold' | 'Blocked';
-  category: 'Committed' | 'Pipeline' | 'Agreed' | 'Delivered' | 'Unverified Estimate';
+  taskBaselineValue?: string;
+  taskOutcomeStatus?: 'Qualified' | 'Blocker Cleared' | 'Deadline Passed ($0)' | 'Identified' | 'Never Heard Of';
+  stage: 'Discovery' | 'Proposal' | 'Negotiation' | 'Committed' | 'Delivered' | 'On Hold' | 'Blocked' | 'Expired';
+  category: 'Committed' | 'Pipeline' | 'Agreed' | 'Delivered' | 'Unverified Estimate' | 'Expired Outcome';
   blocker: string;
   decisionMaker: string;
   evidenceSource: EvidenceSource;
@@ -47,12 +49,25 @@ export interface Stakeholder {
   role: string;
   account: string;
   powerCategory: PowerCategory;
-  relationshipStatus: 'STRONG' | 'NEUTRAL' | 'DECLINING' | 'AT_RISK';
+  relationshipStatus: 'STRONG' | 'NEUTRAL' | 'DECLINING' | 'AT_RISK' | 'UNMET';
   influenceType: 'CONFIRMED' | 'INFERRED';
   evidenceSupportingInfluence: string;
   whatTheyNeed: string;
   nextEngagement: string;
   internalFlytbaseOwner: string;
+}
+
+export interface DealPowerMapping {
+  dealId: string;
+  dealName: string;
+  account: string;
+  decider: string;
+  payer: string;
+  endUser: string;
+  blocker: string;
+  champion: string;
+  relationshipStatus: 'STRONG' | 'NEUTRAL' | 'DECLINING' | 'AT_RISK' | 'UNMET';
+  whatTheyNeed: string;
 }
 
 export interface ActionItem {
@@ -68,6 +83,7 @@ export interface ActionItem {
   businessReason: string;
   sourceEvidence: string;
   expectedOutcome: string;
+  urgencyWeight?: number;
 }
 
 export type RiskSeverity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
@@ -77,7 +93,7 @@ export interface RiskItem {
   title: string;
   account: string;
   severity: RiskSeverity;
-  probability: string; // Qualitative assessment or supported probability
+  probability: string; // Qualitative assessment with explanation
   probabilityIsQualitative: boolean;
   impact: string;
   trigger: string;
@@ -94,7 +110,9 @@ export interface UnknownItem {
   relatedDeal: string;
   whoCanAnswer: string;
   howToObtain: string;
+  suggestedAction: string;
   consequenceIfUnresolved: string;
+  status: 'UNRESOLVED' | 'INVESTIGATING' | 'RESOLVED';
   account: string;
 }
 
@@ -152,6 +170,7 @@ export interface AccountQuestionsAnswers {
   q2_powerHolders: {
     summary: string;
     stakeholders: Stakeholder[];
+    dealPowerMappings: DealPowerMapping[];
   };
   q3_actionsFirst: {
     summary: string;
@@ -193,6 +212,7 @@ export interface CRMDataPayload {
   };
   allDeals: Deal[];
   allStakeholders: Stakeholder[];
+  allDealPowerMappings: DealPowerMapping[];
   allActions: ActionItem[];
   allRisks: RiskItem[];
   allUnknowns: UnknownItem[];

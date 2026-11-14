@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { CrmAggregator } from '@/lib/business/crm-aggregator';
 import { PowerMapSection } from '@/components/questions/PowerMapSection';
-import { Users, Filter } from 'lucide-react';
+import { Users } from 'lucide-react';
 
 export default function StakeholdersPage() {
   const [data, setData] = useState(CrmAggregator.getAggregatedData());
@@ -18,6 +18,11 @@ export default function StakeholdersPage() {
     return stk.account.toLowerCase().includes(accountFilter.toLowerCase());
   });
 
+  const filteredMappings = data.allDealPowerMappings.filter((dpm) => {
+    if (accountFilter === 'ALL') return true;
+    return dpm.account.toLowerCase().includes(accountFilter.toLowerCase());
+  });
+
   return (
     <div className="space-y-6">
       <div className="pb-6 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -29,10 +34,10 @@ export default function StakeholdersPage() {
             <span className="text-xs text-slate-400">Question 2 Across All Accounts</span>
           </div>
           <h1 className="text-2xl font-bold text-slate-100 tracking-tight mt-1">
-            Stakeholder Power Map & Organizational Hierarchy
+            Stakeholder Power Map & Deal Decision Matrix
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Differentiating confirmed budget decision authority from inferred technical influence.
+            Who decides, who pays, who uses, who blocks, who champions, and what each person needs before moving forward.
           </p>
         </div>
 
@@ -51,7 +56,8 @@ export default function StakeholdersPage() {
 
       <PowerMapSection
         stakeholders={filteredStakeholders}
-        summary="Complete organizational relationship roster. Distinguishes decision-makers (Karen Mbeki, Marcus Vance) from champions (Rhys Calder - departing) and operational owners (Dave Sterling)."
+        dealPowerMappings={filteredMappings}
+        summary="Complete organizational relationship roster and deal power matrix. Highlights Karen Mbeki (Westmere decider), Nadia Rahman (Finance decider), and explicitly notes that Owen Fitch (Aldermoor IT Lead) has never been met by the player."
       />
     </div>
   );

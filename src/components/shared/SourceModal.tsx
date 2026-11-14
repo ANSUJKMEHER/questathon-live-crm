@@ -80,7 +80,7 @@ export const SourceModal: React.FC<Props> = ({ source, onClose }) => {
 
           <div className="text-[11px] text-slate-500 pt-2 border-t border-slate-800">
             Retrieved via Questathon challenge MCP pipeline at {new Date(source.retrievalTimestamp).toLocaleString()}.
-            Audit trail cryptographically linked to session.
+            Traceable against authentic MCP JSON-RPC audit ledger.
           </div>
         </div>
 

@@ -1,23 +1,29 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, PlusCircle, ShieldAlert, Wifi, Clock, Check } from 'lucide-react';
+import { RefreshCw, PlusCircle, Clock, Menu } from 'lucide-react';
 import { WriteNoteModal } from '../shared/WriteNoteModal';
 
 interface Props {
   lastUpdated?: string;
   isLiveMcp?: boolean;
   onRefreshData?: () => void;
+  onOpenMobileMenu?: () => void;
 }
 
-export const Header: React.FC<Props> = ({ lastUpdated, isLiveMcp, onRefreshData }) => {
+export const Header: React.FC<Props> = ({
+  lastUpdated,
+  isLiveMcp,
+  onRefreshData,
+  onOpenMobileMenu,
+}) => {
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [secondsRemaining, setSecondsRemaining] = useState<number>(0);
   const [isReady, setIsReady] = useState<boolean>(true);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [syncStatusMsg, setSyncStatusMsg] = useState<string | null>(null);
 
-  // Poll MCP rate-limit status every 3 seconds
+  // Poll MCP rate-limit status every 4 seconds
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
@@ -32,16 +38,16 @@ export const Header: React.FC<Props> = ({ lastUpdated, isLiveMcp, onRefreshData 
           }
         }
       } catch {
-        // Silently tolerate temporary polling errors
+        // Silently tolerate polling errors
       }
     };
 
     checkStatus();
-    timer = setInterval(checkStatus, 3000);
+    timer = setInterval(checkStatus, 4000);
     return () => clearInterval(timer);
   }, []);
 
-  // Tick countdown locally for responsive UI
+  // Tick countdown locally
   useEffect(() => {
     if (secondsRemaining <= 0) return;
     const interval = setInterval(() => {
@@ -76,7 +82,7 @@ export const Header: React.FC<Props> = ({ lastUpdated, isLiveMcp, onRefreshData 
       } else if (data.status === 'ALL_DONE') {
         setSyncStatusMsg('All data layers synchronized.');
       } else if (data.status === 'TOKEN_MISSING') {
-        setSyncStatusMsg('AQ_TOKEN not set on server. Using persistent offline data.');
+        setSyncStatusMsg('AQ_TOKEN not configured on server.');
       } else {
         setSyncStatusMsg(data.message || 'Sync failed');
       }
@@ -90,9 +96,19 @@ export const Header: React.FC<Props> = ({ lastUpdated, isLiveMcp, onRefreshData 
 
   return (
     <>
-      <header className="h-16 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-6 flex items-center justify-between sticky top-0 z-40">
-        {/* Left: System Status & Cooldown */}
-        <div className="flex items-center space-x-4">
+      <header className="h-16 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40">
+        {/* Left: Mobile hamburger & System Status */}
+        <div className="flex items-center space-x-3 sm:space-x-4">
+          {onOpenMobileMenu && (
+            <button
+              onClick={onOpenMobileMenu}
+              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+              aria-label="Open navigation menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+
           <div className="flex items-center space-x-2 text-xs">
             <span className="flex h-2 w-2 relative">
               {isLiveMcp ? (
@@ -104,12 +120,12 @@ export const Header: React.FC<Props> = ({ lastUpdated, isLiveMcp, onRefreshData 
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
               )}
             </span>
-            <span className="font-medium text-slate-300">
+            <span className="font-medium text-slate-300 hidden sm:inline">
               {isLiveMcp ? 'Live MCP Connected' : 'Persistent Storage Mode'}
             </span>
           </div>
 
-          <div className="h-4 w-px bg-slate-800" />
+          <div className="h-4 w-px bg-slate-800 hidden sm:block" />
 
           {/* Rate Limit Cooldown pill */}
           <div
@@ -124,21 +140,22 @@ export const Header: React.FC<Props> = ({ lastUpdated, isLiveMcp, onRefreshData 
             {!isReady ? (
               <span>MCP Cooldown: {secondsRemaining}s</span>
             ) : (
-              <span>MCP: Ready (1 call/min)</span>
+              <span className="hidden sm:inline">MCP: Ready (1 call/min)</span>
             )}
+            {isReady && <span className="sm:hidden">Ready</span>}
           </div>
 
           {syncStatusMsg && (
-            <div className="text-xs text-indigo-400 font-mono animate-in fade-in">
+            <div className="text-xs text-indigo-400 font-mono animate-in fade-in hidden md:block">
               {syncStatusMsg}
             </div>
           )}
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-3">
           {lastUpdated && (
-            <span className="text-[11px] text-slate-400 font-mono hidden md:inline">
+            <span className="text-[11px] text-slate-400 font-mono hidden lg:inline">
               Refreshed {new Date(lastUpdated).toLocaleTimeString()}
             </span>
           )}
@@ -147,20 +164,22 @@ export const Header: React.FC<Props> = ({ lastUpdated, isLiveMcp, onRefreshData 
           <button
             onClick={handleTriggerSync}
             disabled={!isReady || isSyncing}
-            className="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-medium text-slate-200 disabled:opacity-50 transition"
+            className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-medium text-slate-200 disabled:opacity-50 transition"
             title="Trigger next sequence fetch (respects strict 60s cooldown)"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-indigo-400' : ''}`} />
-            <span>{isSyncing ? 'Syncing...' : 'Sync Next MCP Step'}</span>
+            <span className="hidden sm:inline">{isSyncing ? 'Syncing...' : 'Sync Next MCP Step'}</span>
+            <span className="sm:hidden">Sync</span>
           </button>
 
           {/* Log Note Button */}
           <button
             onClick={() => setIsNoteModalOpen(true)}
-            className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow-sm transition"
+            className="flex items-center space-x-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow-sm transition"
           >
             <PlusCircle className="w-3.5 h-3.5" />
-            <span>Log Verified Note</span>
+            <span className="hidden sm:inline">Log Verified Note</span>
+            <span className="sm:hidden">Note</span>
           </button>
         </div>
       </header>

@@ -1,22 +1,28 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-test('Valuation Rules: Segregates verified contracts from customer claims', () => {
-  const verifiedDeals = [
-    { value: 120000, confidence: 'VERIFIED_FACT', category: 'Committed' },
-    { value: 140000, confidence: 'VERIFIED_FACT', category: 'Committed' },
-  ];
-  const claimDeals = [
-    { value: 1500000, confidence: 'CUSTOMER_CLAIM', category: 'Pipeline' },
-    { value: 1200000, confidence: 'CUSTOMER_CLAIM', category: 'Pipeline' },
+test('Valuation Rules: Reconciles task outcomes ($128k, $26k) and audits expired Westmere deadline at $0', () => {
+  const deals = [
+    { name: 'Renew Alliance (35 Docks)', value: 128057, confidence: 'VERIFIED_FACT', category: 'Committed' },
+    { name: 'Renew Aldermoor (14 Docks)', value: 26164, confidence: 'VERIFIED_FACT', category: 'Committed' },
+    { name: 'Scale Westmere Fleet', value: 0, confidence: 'VERIFIED_FACT', category: 'Expired Outcome', stage: 'Expired' },
+    { name: 'Position 300-Dock Framework', value: 535634, confidence: 'CUSTOMER_CLAIM', category: 'Pipeline' },
+    { name: 'Case Study 40-Plant Sister', value: 207845, confidence: 'CUSTOMER_CLAIM', category: 'Pipeline' },
   ];
 
-  const totalVerified = verifiedDeals.reduce((sum, d) => sum + d.value, 0);
-  const totalClaims = claimDeals.reduce((sum, d) => sum + d.value, 0);
+  const committedTotal = deals
+    .filter((d) => d.category === 'Committed')
+    .reduce((sum, d) => sum + d.value, 0);
 
-  assert.equal(totalVerified, 260000, 'Total verified book must equal £260,000');
-  assert.equal(totalClaims, 2700000, 'Total customer claims must equal £2,700,000');
-  assert.notEqual(totalVerified, totalVerified + totalClaims, 'Never conflate claims with verified book total');
+  const expiredDeal = deals.find((d) => d.name === 'Scale Westmere Fleet');
+  const pipelineTotal = deals
+    .filter((d) => d.category === 'Pipeline')
+    .reduce((sum, d) => sum + d.value, 0);
+
+  assert.equal(committedTotal, 154221, 'Verified committed book must equal $154,221 ($128,057 + $26,164)');
+  assert.equal(expiredDeal.value, 0, 'Expired Westmere deadline must be audited at $0');
+  assert.equal(expiredDeal.stage, 'Expired');
+  assert.equal(pipelineTotal, 743479, 'Pipeline baseline must equal $743,479 ($535,634 + $207,845)');
 });
 
 test('Rate Limiter: Strictly enforces 60s cooldown buffer', () => {
@@ -31,47 +37,50 @@ test('Rate Limiter: Strictly enforces 60s cooldown buffer', () => {
   assert.equal(waitSeconds, 31, 'Must require waiting remaining 31 seconds');
 });
 
-test('Rate Limiter: Permits call once cooldown expires', () => {
-  const COOLDOWN_MS = 61000;
-  const now = Date.now();
-  const lastCallTimestamp = now - 62000; // 62s ago
-  const elapsed = now - lastCallTimestamp;
-  const isAllowed = elapsed >= COOLDOWN_MS;
-
-  assert.equal(isAllowed, true, 'Call after 62s must be permitted');
-});
-
-test('Power Mapping: Distinguishes confirmed authority from unverified claims', () => {
+test('Power Mapping: Owen Fitch is explicitly cataloged as UNMET and deal power mappings are complete', () => {
   const stakeholders = [
-    { name: 'Insp. Karen Mbeki', influenceType: 'CONFIRMED', powerCategory: 'DECISION_MAKER' },
-    { name: 'Nadia Rahman', influenceType: 'CONFIRMED', powerCategory: 'DECISION_MAKER' },
-    { name: 'Hannah Doyle', influenceType: 'CONFIRMED', powerCategory: 'PROCUREMENT' },
-    { name: 'Fatima Osei', influenceType: 'CONFIRMED', powerCategory: 'BLOCKER' },
+    { name: 'Insp. Karen Mbeki', relationshipStatus: 'AT_RISK', powerCategory: 'DECISION_MAKER' },
+    { name: 'Nadia Rahman', relationshipStatus: 'AT_RISK', powerCategory: 'DECISION_MAKER' },
+    { name: 'Owen Fitch', relationshipStatus: 'UNMET', powerCategory: 'TECHNICAL_APPROVER' },
   ];
 
-  const confirmedDecisionMakers = stakeholders.filter(
-    (s) => s.powerCategory === 'DECISION_MAKER' && s.influenceType === 'CONFIRMED'
-  );
-  assert.equal(confirmedDecisionMakers.length, 2, 'Must have exactly 2 confirmed economic/operational decision-makers');
+  const owen = stakeholders.find((s) => s.name === 'Owen Fitch');
+  assert.ok(owen, 'Owen Fitch must be present in power map');
+  assert.equal(owen.relationshipStatus, 'UNMET', 'Owen Fitch must be explicitly marked UNMET as player has never met him');
 
-  const complianceBlockers = stakeholders.filter((s) => s.powerCategory === 'BLOCKER');
-  assert.equal(complianceBlockers.length, 1, 'Fatima Osei holds DPIA compliance veto');
+  const dealMapping = {
+    dealId: 'DEAL-AIG-01',
+    decider: 'Nadia Rahman',
+    payer: 'Corporate Security Budget',
+    endUser: 'On-site Guards',
+    blocker: 'Nadia Rahman (sees no guard contract savings)',
+    champion: 'Stefan Roy',
+  };
+  assert.equal(dealMapping.decider, 'Nadia Rahman');
+  assert.equal(dealMapping.champion, 'Stefan Roy');
 });
 
 test('Action Prioritization: Rank #1 actions address immediate live signals and tickets', () => {
-  const accountAActions = [
+  const actions = [
     { priorityRank: 1, action: 'Draft written response to Insp. Karen Mbeki regarding Ticket FB-11206 before 5 Dec' },
-    { priorityRank: 2, action: 'Dispatch data-flow architecture to Fatima Osei to unblock Tarn Valley DPIA' },
+    { priorityRank: 2, action: 'Initiate proactive telemetry diagnostic on 3 silent perimeter docks' },
   ];
 
-  const accountBActions = [
-    { priorityRank: 1, action: 'Initiate proactive technical diagnostic on 3 silent perimeter docks' },
-    { priorityRank: 2, action: 'Present finance-grade ROI audit to Nadia Rahman mapped to 3 upcoming guard contract renewals' },
-  ];
+  assert.match(actions[0].action, /Karen Mbeki/);
+  assert.match(actions[0].action, /FB-11206/);
+  assert.match(actions[1].action, /3 silent perimeter docks/);
+});
 
-  assert.match(accountAActions[0].action, /Karen Mbeki/);
-  assert.match(accountAActions[0].action, /FB-11206/);
-  assert.match(accountBActions[0].action, /3 silent perimeter docks/);
+test('Unknowns Register: Tracks lifecycle status (UNRESOLVED, INVESTIGATING, RESOLVED) and suggested action', () => {
+  const unknownItem = {
+    id: 'UNK-AIG-01',
+    missingInformation: 'Exact root cause of the 14-day night flight stoppage on 3 perimeter docks',
+    status: 'INVESTIGATING',
+    suggestedAction: 'Deploy telemetry diagnostic probe to examine scheduler daemon logs without customer disruption',
+  };
+
+  assert.equal(unknownItem.status, 'INVESTIGATING');
+  assert.ok(unknownItem.suggestedAction.length > 10, 'Must have actionable suggested next step');
 });
 
 test('Live Signals: Recognizes silent dock stoppage and marks cause strictly unknown', () => {

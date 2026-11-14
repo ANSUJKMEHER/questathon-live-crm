@@ -16,7 +16,12 @@ function getFsAndPath() {
     const fs = require('fs');
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const path = require('path');
-    const rateLimitFile = path.join(process.cwd(), 'data', 'rate-limit.json');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const os = require('os');
+    
+    // In Vercel serverless functions, only /tmp is writable
+    const baseDir = process.env.VERCEL ? os.tmpdir() : process.cwd();
+    const rateLimitFile = path.join(baseDir, 'data', 'rate-limit.json');
     return { fs, path, rateLimitFile };
   } catch {
     return null;
@@ -31,7 +36,7 @@ function ensureDataDir(): void {
     try {
       env.fs.mkdirSync(dir, { recursive: true });
     } catch {
-      // Ignore if cannot write to filesystem
+      // Ignore if cannot write
     }
   }
 }

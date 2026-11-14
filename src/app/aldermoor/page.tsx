@@ -92,6 +92,7 @@ export default function AldermoorPage() {
       {/* Question 2: Who holds the power? */}
       <PowerMapSection
         stakeholders={ans.q2_powerHolders.stakeholders}
+        dealPowerMappings={ans.q2_powerHolders.dealPowerMappings}
         summary={ans.q2_powerHolders.summary}
       />
 

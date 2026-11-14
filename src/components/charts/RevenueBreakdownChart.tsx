@@ -39,7 +39,7 @@ export const RevenueBreakdownChart: React.FC<Props> = ({ data }) => {
           <YAxis
             stroke="#64748b"
             fontSize={11}
-            tickFormatter={(val) => `£${val / 1000}k`}
+            tickFormatter={(val) => `$${val / 1000}k`}
             tickLine={false}
           />
           <Tooltip
@@ -50,7 +50,7 @@ export const RevenueBreakdownChart: React.FC<Props> = ({ data }) => {
               fontSize: '12px',
               color: '#f8fafc',
             }}
-            formatter={(value: number) => [`£${value.toLocaleString()}`, '']}
+            formatter={(value: number) => [`$${value.toLocaleString()}`, '']}
           />
           <Legend
             wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }}
