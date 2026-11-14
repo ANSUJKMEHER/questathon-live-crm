@@ -1,4 +1,4 @@
-# Questathon Live CRM — 3-Minute Video Walkthrough Script
+# FlytBase Autonomous Live CRM — 3-Minute Video Walkthrough Script
 
 **Format**: Screen recording with voiceover  
 **Target Duration**: Exactly 3 minutes (180 seconds)  
@@ -6,52 +6,88 @@
 
 ---
 
-### [0:00 - 0:30] Introduction & Executive Overview (30s)
-**Action**: Start on the **Overview** dashboard (`/`). Move cursor over the KPI cards and Dual-Account Health summary.  
-**Voiceover**:  
-> "Welcome to our live Customer Success Management CRM, engineered for FlytBase's autonomous drone deployments for the Questathon challenge.
-> This CRM serves as the single source of truth for our two key accounts: **Eastern Counties Police Alliance** and **Aldermoor Industrial Group**. 
-> As you can see on the Command Cockpit, the dashboard immediately separates our £330,000 in verified committed contracts from £320,000 in uncommitted customer expansion claims. 
-> Up in the header, our real-time rate limiter ensures we strictly comply with the one-call-per-minute MCP server quota with a live cooldown indicator."
+### [0:00–0:25] Introduction & Cockpit Overview (25s)
+
+"Hi, this is my FlytBase Autonomous Live CRM, built for the Questathon challenge.
+
+The application brings together account information, opportunities, stakeholders, risks, action plans, unknowns, and live signals for two customers: Eastern Counties Police Alliance and Aldermoor Industrial Group.
+
+Across the entire book, the CRM establishes an **evidence-backed qualified renewal baseline of $154,221** and a **qualified pipeline baseline of $891,199**, while keeping a **$2.9 million speculative ceiling** strictly separated. Contractually confirmed revenue is currently unverified because signed contracts have not been established.
+
+The main goal is turning scattered customer information into evidence-backed decisions, rather than simply displaying CRM data."
 
 ---
 
-### [0:30 - 1:15] Answering the 5 Questions: Account A & Evidence Trace (45s)
-**Action**: Click into **Eastern Counties** (`/eastern-counties`). Scroll smoothly past Question 1 to 5. Click on the `£120,000` badge to trigger the **Evidence Provenance Trace** modal.  
-**Voiceover**:  
-> "Let's examine Account A: Eastern Counties Police Alliance. The CRM answers all five managerial questions:
-> First, **What is the book worth?** Here is £120,000 in verified revenue. If I click this badge, the Evidence Modal displays the exact executed purchase order PO-2024-ECPA-09 pulled directly from the MCP server. We deliberately do not lump Rhys Calder's £180,000 Phase 2 verbal aspiration into our verified book.
-> Second, **Who holds the power?** Our power map proves Karen Mbeki is the confirmed decision-maker with executive sign-off authority, while Chief Constable holds payer approval.
-> Third, **What do you do first?** Priority Rank #1 is drafting our written commitment to Karen Mbeki before the 5 December public demonstration.
-> Fourth, **What is about to go wrong?** We have a critical single-threaded relationship risk: Rhys Calder departs in January with no named successor.
-> Fifth, **What do you still not know?** We explicitly flag the unknown identity of his replacement and the unconfirmed PCC budget."
+### [0:25–1:20] Eastern Counties Police Alliance (55s)
+
+"Let's start with Eastern Counties.
+
+**First, what is the book worth?**
+Eastern Counties has an evidence-backed qualified renewal baseline of **$128,057** across 35 docks. 
+Its qualified pipeline baseline is **$677,936**, comprising the Tarn Valley expansion at $142,302 and the 300-dock framework tender at $535,634. 
+Crucially, the **Scale Westmere Fleet** deal is audited strictly at **$0** because its autumn finance bid deadline passed unfinished. 
+The tender has a speculative ceiling of $1.5 million and Tarn Valley has a £200,000 ceiling, but I keep potential ceilings strictly separate from qualified baselines.
+
+**Second, who holds power?**
+Rhys Calder is the alliance programme lead and our sole historic relationship, but he departs in January 2027. Insp. Karen Mbeki commands the Westmere drone unit and has raised an urgent operational request. Hannah Doyle leads alliance procurement, Fatima Osei is the Tarn Valley DPO holding compliance sign-off, and Ewan Brooks controls Metro Central finance. These roles are kept separate because a user, champion, procurement lead, and payer are not the same person.
+
+**Third, what do we do first?**
+Priority one is delivering a written response to Karen Mbeki committing operator training dates and an emergency escalation engineer before her December 5 public event. Priority two is dispatching data-flow documents to Fatima Osei to unblock Tarn Valley's DPIA. Priority three is submitting a costed operating model to Hannah Doyle before the tender specification locks.
+
+**Fourth, what is about to go wrong?**
+Immediate risks are Karen's unanswered request for December 5, the single-threaded departure of Rhys Calder without a named successor, and the tender locking in eight moves without an operating model.
+
+**Fifth, what do we still not know?**
+We do not know Rhys's successor, whether individual forces will fund call-offs under the framework, or true operator overtime costs."
 
 ---
 
-### [1:15 - 1:55] Answering the 5 Questions: Account B & Live Signal Telemetry (40s)
-**Action**: Navigate to **Aldermoor** (`/aldermoor`). Focus on Question 4 and the Live Signals banner.  
-**Voiceover**:  
-> "Now let's switch to Account B: Aldermoor Industrial Group. 
-> Notice the account health is flagged as **CRITICAL**. 
-> Through our live `get_signals` feed, the CRM detected that three perimeter docks that normally fly nightly have ceased flying over the last 14 days, even though all three remain online and no customer ticket was raised.
-> Following our strict zero-fabrication rule, our risk and unknowns registers state unequivocally that the root cause is **currently unknown**—we do not guess. 
-> Our top priority action is an immediate proactive diagnostic and a supportive check-in with Group Security Director Marcus Vance."
+### [1:20–2:05] Aldermoor Industrial Group (45s)
+
+"Now let's examine Aldermoor Industrial Group.
+
+**First, what is the book worth?**
+Aldermoor's qualified renewal baseline is **$26,164 ARR** across 14 docks. 
+Its qualified pipeline baseline is **$213,263**, comprising the $5,418 idle-plants opportunity and the $207,845 sister-company case study. 
+The insurance discount deal is cataloged as **Unidentified ($0)** because insurer savings are not yet quantified. 
+The claimed €1.2 million return from the sister company is an unverified spreadsheet claim, so I label it as a speculative maximum claim. Furthermore, the idle-plant opportunity has a null ceiling in MCP and is excluded from ceiling totals.
+
+**Second, who holds power?**
+Stefan Roy is group head of security and our internal champion. Beatriz Alonso manages Plant 7, Nadia Rahman is the finance controller and renewal gatekeeper, and Julian Tate handles insurance. Crucially, **Owen Fitch** is identified as our IT infrastructure contact, but is cataloged as **UNMET** because the CSM has never engaged him.
+
+**Third, what do we do first?**
+First, initiate proactive telemetry diagnostics on the three silent perimeter docks. Second, present a finance-grade ROI model to Nadia Rahman mapped to three upcoming guard contract renewals. Third, deliver a night-time priority proposal for Plant 7.
+
+**Fourth, what is about to go wrong?**
+The customer reports 14 installed docks and 13 flying, but flight-log evidence reveals only four plants fly regularly while nine only log test flights. Even more critically, three perimeter docks stopped flying night patrols over the past 14 days without any customer ticket.
+
+**Fifth, what do we still not know?**
+The root cause of the three-dock stoppage is **strictly unknown**—we do not guess. We also lack finance-verified savings and Owen Fitch's network requirements."
 
 ---
 
-### [1:55 - 2:25] Safe Write-Back (`write_note`) & Live Ingestion (30s)
-**Action**: Click the **Log Verified Note** button in the header. Show the modal with validation, type in a check-in note title, and click **Commit Note**. Show the confirmation notification.  
-**Voiceover**:  
-> "When our team takes action, we execute a verified write-back using the MCP `write_note` tool.
-> The CRM verifies existing records to prevent duplicate submissions, validates the account schema, and commits the note directly to the server. 
-> Once confirmed, the note is stamped and permanently integrated into our CRM audit trail."
+### [2:05–2:35] Evidence Provenance & Live Signal Distinction (30s)
+
+"An essential capability of this CRM is provenance and source auditability.
+
+Every figure, date, and person is tied to an indexed record in the Evidence Registry. 
+
+For example, Karen's urgent request is verified from the live API feed via ticket **FB-11206** in `get_signals`, and Rhys's departure risk is verified from his November 17 email.
+
+However, the **three-dock telemetry anomaly is different**: it originates from the **challenge briefing telemetry**, not from the `get_signals` API tool. I explicitly preserve that distinction rather than falsely presenting every data point as API-derived."
 
 ---
 
-### [2:25 - 3:00] Architecture & Secure MCP Design (35s)
-**Action**: Open VS Code / GitHub briefly showing the modular project structure (`src/lib/mcp/client.ts`, `rate-limiter.ts`, `.gitignore`), highlighting the clean abstraction. Return to the dashboard.  
-**Voiceover**:  
-> "Under the hood, the application is built with Next.js App Router, TypeScript, and Tailwind CSS.
-> In our server-side MCP client, the `AQ_TOKEN` is strictly confined to server runtime environment variables—it never touches client-side JavaScript, logs, or Git commits. 
-> Our rate limiter enforces a 61-second cooldown buffer with persistent state, preventing race conditions.
-> This CRM gives executives full confidence, verifiable evidence, and zero fluff. Ready for deployment. Thank you."
+### [2:35–2:50] Actions & Safe Write-Back (15s)
+
+"The action plan translates risks and unknowns into accountable tasks with priority ranks, owners, target dates, and linked opportunities. Where an owner or due date is inferred, it is visibly marked as a recommendation rather than an established fact.
+
+[Demonstrate write-back: Click 'Log Note', enter an operational check-in note, submit, and display confirmed MCP integration.]"
+
+---
+
+### [2:50–3:00] Closing (10s)
+
+"In summary, this CRM answers the five executive questions with rigorous evidence: what the book is worth, who holds power, what to do first, what could go wrong, and what remains unknown.
+
+It turns raw customer signals into defensible, audit-proof Customer Success strategy. Thank you."
